@@ -44,7 +44,7 @@ end
 """
     syncPlot()
 
-Example synchtoron plot.
+Example synchotron plot.
 """
 function syncPlot()
     # Set up an array of photon frequencies
