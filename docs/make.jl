@@ -3,9 +3,16 @@ push!(LOAD_PATH,"src")
 using Documenter
 using DiscJetConnections
 
-makedocs(sitename="Synchrotron Documentation")
 makedocs(
     modules=[DiscJetConnections],
-    clean=true,
-    sitename="DiscJetConnections.jl"
+    clean=false,
+    sitename="Documentation",
+
+    pages = [
+        "Home" => "index.md"
+    ]
+)
+
+deploydocs(
+    repo = "github.com/phajy/DiscJetConnections.jl.git",
 )
