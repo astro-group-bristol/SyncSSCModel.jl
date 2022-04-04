@@ -73,6 +73,8 @@ function syncPlot()
         j_syn_values[i] = j_syn(ϵ)
     end
 
+    return [j_syn_values, log_nu]
+
     # Plotting the synchrotron emissivity
     # The feature of the plot below may not be the required feature for the synchrotron emissivity
     # But I just tested how to plot with Julia
@@ -81,4 +83,53 @@ function syncPlot()
     plot(log_nu, j_syn_values, label = L"j_{syn} (nu)", title = "Synchrotron emissivity", yaxis=:log10, xlims=(9, 19), ylims=(1.0E-20, 1.0E-12), fmt=:jpg)
     xlabel!(L"\log_{10} (\nu)")
     ylabel!(L"j_{syn}")
+
+end
+
+
+"""
+    S_syn(j_syn, z)
+
+Synchrotron Flux Density.
+
+```math
+S_{syn}(\\epsilon, \\Omega; x) = \\frac{D^3 * (1+z) * Vb * j_{syn}}{dL^2}
+```
+"""
+function S_syn()
+    # Redshift Values z
+    #z = [z1, z2, z3]
+
+    # synchrotron Flux Density
+    j_syn_values = syncPlot()[1]
+    S_syn_values = zeros(length(j_syn_values))
+    
+    # doppler factor D(Γ,θ)
+    # Γ is the Bulk Lorentz Factor
+    # Θ is the angle between the direction of the blob's motion and the direction to the observer
+    β = 1 - (1 / 2*Γ^2)
+    μ_obs = 1 - (θ^2 / 2)
+    D = 1 / (Γ*(1-(β * μ_obs)))
+    
+    # Luminosity Distance dL(z)
+    dL = (2*c / Ho) * (z+1 - sqrt(z+1))
+
+    # Volume of the blob (Sphere with radius R) Vb(R)
+    Rg = 1.5E13 * M8
+    R = 10^3 * Rg    
+    Vb = 4/3 * pi * R^3
+
+    for i in eachindex(S_syn_values)
+        S_syn_values[i] = (D^3 * (1+z) * Vb * j_syn_values[i]) / (dL^2)
+    end
+    
+    #return S_syn_values
+
+    log_nu = syncPlot()[2]
+
+    #plot(log_nu, S_syn_values, label = L"S_{syn} (nu)", title = "Flux Density", yaxis=:log10, xlims=(9, 19), ylims=(1.0E-20, 1.0E-12), fmt=:jpg)
+    plot(log_nu, S_syn_values, label = L"S_{syn} (\nu)", title = "Flux Density", fmt=:jpg)
+    xlabel!(L"\log_{10} (\nu)")
+    ylabel!(L"S_{syn}")
+
 end

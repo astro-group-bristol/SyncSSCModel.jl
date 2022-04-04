@@ -23,9 +23,17 @@ p = 3.0                     # p : power law index of electron distribution funct
 γ_min = 1.0E2               # γ_min : minimum Lorentz factor of electrons
 γ_max = 1.0E7               # γ_max : maximum Lorentz factor of electrons
 
+z = 0.01                    # z : Redshift
+Γ = 2.6                     # Bulk Lorentz factor
+θ = 0                       # Angle between the direction of the blob's motion and the direction to the observer
+ho = 0.67                   # Hubble parameter
+Ho = 100*ho                 # Hublle constant in km s^-1 Mpc^-1
+M8 = 1E8                    # Mass of BH in Solar Masses
+
 export dn_e
 export j_syn
 export syncPlot
+export S_syn
 
 include("synchrotron.jl")
 
