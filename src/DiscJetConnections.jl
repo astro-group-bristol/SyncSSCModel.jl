@@ -13,7 +13,7 @@ c = 2.99792458E10           # c : speed of light in cm s^-1
 h = 6.6260755E-27           # h : Planck's constant in ergs
 σ_T = 0.66524616E-24        # σ_T : Thomson cross-section in cm^2
 
-# Parameters
+# Default parameters
 B = 3.0E-6                  # B : magnetic field strength in Gauss
 ϵ_B = B/4.414E13            # ϵ_B : cyclotron energy in units of m_e*c^2
 u_B = B^2/8.0*pi            # u_B : magnetic field energy density
