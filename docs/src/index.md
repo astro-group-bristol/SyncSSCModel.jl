@@ -3,6 +3,6 @@
 ```@docs
 dn_e(γ, n_e0, p, γ_min, γ_max)
 j_syn(ϵ)
-S_syn(j_syn, z)
+S_syn()
 syncPlot()
 ```
