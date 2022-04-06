@@ -88,7 +88,9 @@ end
 
 
 """
-    S_syn(j_syn, z)
+    S_syn()
+    
+Should this take parameters (j_syn, z), but these aren't included in the definition?
 
 Synchrotron Flux Density.
 
