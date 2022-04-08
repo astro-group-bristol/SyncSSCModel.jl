@@ -46,7 +46,7 @@ end
     
 Synchrotron Flux Density at observed photon energy `ϵ`.
 
-This impliments equation 3 of [dermer_nonthermal_1997](@cite).
+This impliments equation 3 of [Dermer1997](@cite).
 
 ```math
 S_{syn}(\\epsilon, \\Omega; x) = \\frac{D^3 * (1+z) * Vb * j_{syn}}{dL^2}
