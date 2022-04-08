@@ -26,9 +26,7 @@ end
 
 Synchrotron emissivity at photon energy `ϵ` for parameters `mps`.
 
-For an isotropic electron distribution in a randomly oriented magnetic field, the synchrotron emissivity is (see [Dermer et al. (1997)](https://ui.adsabs.harvard.edu/abs/1997ApJS..109..103D/abstract) equation 13; we've changed their ``H`` to our ``B``)
-
-This impliments equation 13 of [Dermer et al. 1997](https://iopscience.iop.org/article/10.1086/312972).
+For an isotropic electron distribution in a randomly oriented magnetic field, the synchrotron emissivity is (see equation 13 of [Dermer et al. (1997)](https://ui.adsabs.harvard.edu/abs/1997ApJS..109..103D/abstract) equation 13; we've changed their ``H`` to our ``B``)
 
 ```math
 j_{syn}(\\epsilon, \\Omega; x) = \\frac{c \\sigma_T u_B}{6 \\pi \\epsilon_B} \\left( \\frac{\\epsilon}{\\epsilon_B} \\right)^{\\tiny{1/2}} \\small{n_e} \\left[ \\left( \\frac{\\epsilon}{\\epsilon_B}\\right)^{\\tiny{1/2}};x \\right]
@@ -48,7 +46,7 @@ end
     
 Synchrotron Flux Density at observed photon energy `ϵ`.
 
-This impliments equation 3 of [Dermer et al. 1997](https://iopscience.iop.org/article/10.1086/312972).
+This impliments equation 3 of [Dermer et al. (1997)](https://ui.adsabs.harvard.edu/abs/1997ApJS..109..103D/abstract).
 
 ```math
 S_{syn}(\\epsilon, \\Omega; x) = \\frac{D^3 * (1+z) * Vb * j_{syn}}{dL^2}
