@@ -1,13 +1,9 @@
 push!(LOAD_PATH,"src")
 
 using Documenter
-using DocumenterCitations
 using DiscJetConnections
 
-bib = CitationBibliography("references.bib")
-
 makedocs(
-    bib,
     modules=[DiscJetConnections],
     clean=false,
     sitename="Documentation",
