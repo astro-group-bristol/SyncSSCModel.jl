@@ -16,6 +16,6 @@ makedocs(
 # Update the following to have the correct user name
 # for your local version or the astro-group-bristol version
 deploydocs(
-    #repo = "github.com/phajy/DiscJetConnections.jl.git"
-    repo = "github.com/astro-group-bristol/DiscJetConnections.jl.git"
+# repo = "github.com/phajy/DiscJetConnections.jl.git"
+repo = "github.com/astro-group-bristol/DiscJetConnections.jl.git"
 )
