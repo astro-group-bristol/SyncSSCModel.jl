@@ -11,6 +11,8 @@ where
 ```math
 \\gamma_{min} \\le \\gamma \\le \\gamma_{max}
 ```
+see the equation 7.20 in Rybicki & Lightman 1979 (book)
+
 """
 function dn_e(γ, mps)
     if (γ < mps.γ_min) || (γ > mps.γ_max)
@@ -63,13 +65,31 @@ function S_syn(ϵ, mps)
     # Luminosity Distance dL(z)
     dL = (2.0*mps.c / mps.Ho) * (mps.z+1.0 - sqrt(mps.z+1.0))
 
-    # Volume of the blob (Sphere with radius R) Vb(R)
-    Rg = 1.5E13 * mps.M8
-    R = 10^3 * Rg
+    # Volume of the blob (Sphere with radius R in cm) Vb(R)
+    # Rg = 1.5E13 * mps.M8
+    # R = 10^3 * Rg
+    R = 1.0E22
     Vb = (4.0/3.0) * pi * R^3
 
     return((D^3 * (1.0+mps.z) * Vb * j_syn(ϵ*(1.0+mps.z)/D, mps)) / dL^2)
 end
+
+
+"""
+    P_syn(ϵ, mps)
+    
+Synchrotron Spectral Power Flux at observed photon energy `ϵ`.
+
+This is equivalent to \\nu F(\\nu) and presented in equation 23 of [Dermer et al. (1997)](https://ui.adsabs.harvard.edu/abs/1997ApJS..109..103D/abstract).
+
+```math
+P_{syn}(\\epsilon, \\Omega; x) = \\epsilon  S_{syn}
+```
+"""
+function P_syn(ϵ, mps)
+    return(ϵ * S_syn(ϵ, mps))
+end
+
 
 """
     syncPlot(mps)
@@ -95,6 +115,7 @@ function syncPlot(mps)
     # Calculate S_syn values
     for i in eachindex(j_syn_values)
         nu = 10.0^log_nu[i]
+    # Calculate P_syn values
         # need to convert photon frequency to epsilon
         ϵ = mps.h*nu/(mps.m_e*mps.c^2)
         
