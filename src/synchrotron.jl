@@ -57,18 +57,18 @@ function S_syn(ϵ, mps)
     # doppler factor D(Γ,θ)
     # Γ is the Bulk Lorentz Factor
     # Θ is the angle between the direction of the blob's motion and the direction to the observer
+    # B = 1 / β in the Dermer e tal. (1997) paper
     β = sqrt(1.0 - 1.0/mps.Γ^2)
     μ_obs = cos(mps.θ)
-    D = 1 / (mps.Γ*(1-(β * μ_obs)))
+    D = 1.0 / (mps.Γ*(1 - μ_obs/β))
     
     # Luminosity Distance dL(z)
-    dL = (2.0*mps.c / mps.Ho) * (mps.z+1.0 - sqrt(mps.z+1.0))
+    # Convert H_0 km / s / Mpc to cm / s / cm (cgs)
+    dL = (2.0*mps.c / (mps.Ho * 1.0E5 / 3.086E24 )) * (mps.z+1.0 - sqrt(mps.z+1.0))
 
-    # Volume of the blob (Sphere with radius R in cm) Vb(R)
+    # Volume of the blob (Sphere with radius in cm) Vb(R)
     # Rg = 1.5E13 * mps.M8
-    # R = 10^3 * Rg
-    R = 1.0E22
-    Vb = (4.0/3.0) * pi * R^3
+    Vb = (4.0/3.0) * pi * mps.radius^3
 
     return((D^3 * (1.0+mps.z) * Vb * j_syn(ϵ*(1.0+mps.z)/D, mps)) / dL^2)
 end
@@ -141,11 +141,11 @@ function syncPlot(mps)
 
     # Plotting the synchrotron spectral power flux  ~ νF(ν)
     plot(
-        log_nu, P_syn_values, label = L"\epsilon S_{syn} (\nu) \sim \nu F(\nu)", 
+        log_nu, P_syn_values, label = L"\nu S_{syn} (\nu)", 
         title = "Synchrotron spectral power flux", titlefontsize = 10, 
-        ylims=(22, 26), fmt=:jpg
+        ylims=(-16, -5), fmt=:jpg
         )
-    xlabel!(L"\log(\nu) - Hz")
-    ylabel!(L"\log(P_{syn}) - cgs")
+    xlabel!(L"\log(\nu) [Hz]")
+    ylabel!(L"\log(\nu S_{syn} (\nu)) [cgs]")
     #savefig("syn_spectral_power_flux.png")
 end
