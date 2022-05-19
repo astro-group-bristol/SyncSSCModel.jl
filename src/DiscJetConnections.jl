@@ -9,6 +9,7 @@ gr()
 export dn_e
 export j_syn
 export S_syn
+export P_syn
 export syncPlot
 
 export MyParamStruct
@@ -30,13 +31,14 @@ export MyParamStruct
     "Magnetic field strength in Gauss"
     B = 1.5E-5      
     "Cyclotron energy in units of m_e*c^2"
-    ϵ_B = B/4.414E13    
+    #ϵ_B = m_e*c^2
+    ϵ_B = B/4.414E13    # Dermer 1995 below eq.8
     "Magnetic field energy density"
     u_B = B^2/8.0*pi   
 
     # PKS0637-752: Values taken from Schwartz et al. 2000 or Tavecchio et al. 2000
     "Normalisation of electron density"
-    n_e0 = 6E-5 # This value should not be bigger (not 500.0) but less
+    n_e0 = 6.0E-5 # This value should not be bigger (not 500.0) but less
     "Power law index of electron distribution function"
     p = 2.6             
     "Minimum Lorentz factor of electrons"
@@ -47,12 +49,15 @@ export MyParamStruct
     z = 0.651
     "Bulk Lorentz factor"
     Γ = 10.0
-    "Angle between the direction of the blob's motion and the direction to the observer"
-    θ = 6.0
+    "Angle (radians) between the direction of the blob's motion and the direction to the observer"
+    θ = 6.0*pi/180.0
+    "Radius of emitting region"
+    radius = 1.0E22
 
     "Hubble parameter"
     ho = 0.67
     "Hublle constant in km s^-1 Mpc^-1"
+    # Ho = 100.0*ho
     Ho = 100.0*ho
     "Mass of BH in Solar Masses"
     M8 = 1.0E8
