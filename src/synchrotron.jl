@@ -126,6 +126,7 @@ function syncPlot(mps)
         S_syn_values[i] = log10(S_syn(ϵ, mps))
         P_syn_values[i] = log10(ϵ*S_syn(ϵ, mps))
     end
+    print(P_syn_values)
     
     # Plotting the synchrotron emissivity
     # plot(log_nu, j_syn_values, label = L"j_{syn} (nu)", title = "Synchrotron emissivity", titlefontsize = 10, yaxis=:log10, xlims=(9, 19), ylims=(1.0E-20, 1.0E-12), fmt=:jpg)
@@ -143,7 +144,7 @@ function syncPlot(mps)
     plot(
         log_nu, P_syn_values, label = L"\epsilon S_{syn} (\nu) \sim \nu F(\nu)", 
         title = "Synchrotron spectral power flux", titlefontsize = 10, 
-        ylims=(22, 26), fmt=:jpg
+        ylims=(-16, -5), fmt=:jpg
         )
     xlabel!(L"\log(\nu) - Hz")
     ylabel!(L"\log(P_{syn}) - cgs")
