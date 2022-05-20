@@ -57,7 +57,7 @@ function S_syn(ϵ, mps)
     # doppler factor D(Γ,θ)
     # Γ is the Bulk Lorentz Factor
     # Θ is the angle between the direction of the blob's motion and the direction to the observer
-    # B = 1 / β in the Dermer e tal. (1997) paper
+    # B = 1 / β in the Dermer et al. (1997) paper
     β = sqrt(1.0 - 1.0/mps.Γ^2)
     μ_obs = cos(mps.θ)
     D = 1.0 / (mps.Γ*(1 - μ_obs/β))
