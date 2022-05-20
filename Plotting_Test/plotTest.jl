@@ -6,3 +6,5 @@ mps = MyParamStruct(M8=0.1)
 
 # Test Synchrotron plot
 syncPlot(mps)
+
+print("Done!\n")

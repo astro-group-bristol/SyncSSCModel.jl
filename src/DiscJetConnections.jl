@@ -57,7 +57,7 @@ export MyParamStruct
     ho = 0.67
     "Hublle constant in km s^-1 Mpc^-1"
     # Ho = 100.0*ho
-    Ho = 100.0*ho
+    Ho = 50.0
     "Mass of BH in Solar Masses"
     M8 = 1.0E8
 end
