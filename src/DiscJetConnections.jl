@@ -31,7 +31,6 @@ export MyParamStruct
     "Magnetic field strength in Gauss"
     B = 1.5E-5      
     "Cyclotron energy in units of m_e*c^2"
-    #ϵ_B = m_e*c^2
     ϵ_B = B/4.414E13    # Dermer 1995 below eq.8
     "Magnetic field energy density"
     u_B = B^2/8.0*pi   
