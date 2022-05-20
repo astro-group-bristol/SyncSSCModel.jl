@@ -9,7 +9,6 @@ gr()
 export dn_e
 export j_syn
 export S_syn
-export P_syn
 export syncPlot
 
 export MyParamStruct
@@ -29,15 +28,15 @@ export MyParamStruct
     σ_T = 0.66524616E-24
     
     "Magnetic field strength in Gauss"
-    B = 1.5E-5  
+    B = 1.5E-5
     "Cyclotron energy in units of m_e*c^2"
-    ϵ_B = B/4.414E13    # Dermer 1995 below eq.8
+    ϵ_B = B/4.414E13
     "Magnetic field energy density"
     u_B = B^2/8.0*pi
 
     # PKS0637-752: Values taken from Schwartz et al. 2000 or Tavecchio et al. 2000
     "Normalisation of electron density"
-    n_e0 = 6.0E-5 # This value should not be bigger (not 500.0) but less
+    n_e0 = 6E-5 # This value should not be bigger (not 500.0) but less
     "Power law index of electron distribution function"
     p = 2.6             
     "Minimum Lorentz factor of electrons"
