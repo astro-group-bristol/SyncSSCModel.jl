@@ -57,15 +57,15 @@ function S_syn(ϵ, mps)
     # doppler factor D(Γ,θ)
     # Γ is the Bulk Lorentz Factor
     # Θ is the angle between the direction of the blob's motion and the direction to the observer
-    # B = 1 / β in the Dermer e tal. (1997) paper
+    # B = 1 / β in the Dermer et al. (1997) paper
     β = sqrt(1.0 - 1.0/mps.Γ^2)
     μ_obs = cos(mps.θ)
-    D = 1.0 / (mps.Γ*(1 - μ_obs/β))
+    D = 1.0 / (mps.Γ*(1 - μ_obs*β))
     
     # Luminosity Distance dL(z)
     # Convert H_0 km / s / Mpc to cm / s / cm (cgs)
-    dL = (2.0*mps.c / (mps.Ho * 1.0E5 / 3.086E24 )) * (mps.z+1.0 - sqrt(mps.z+1.0))
-
+    #dL = (2.0*mps.c / (mps.Ho * 1.0E5 / 3.086E24 )) * (mps.z+1.0 - sqrt(mps.z+1.0))
+    dL = 1.26E28
     # Volume of the blob (Sphere with radius in cm) Vb(R)
     # Rg = 1.5E13 * mps.M8
     Vb = (4.0/3.0) * pi * mps.radius^3
@@ -111,7 +111,9 @@ function syncPlot(mps)
     S_syn_values = zeros(length(log_nu))
     # P_syn : synchrotron spectral power flux in cgs units ergs cm^-2 s^-1 Hz^-1
     P_syn_values = zeros(length(log_nu))
-
+    # Energy : E=hν (Define the x-axis to the energy in [ergs], try to produce fig2 in Uchiyama et al 2005)
+    Energy = zeros(length(log_nu))
+    
     # Calculate j_syn values
     # Calculate S_syn values
     # Calculate P_syn values
@@ -121,10 +123,10 @@ function syncPlot(mps)
         ϵ = mps.h*nu/(mps.m_e*mps.c^2)
         
         # print("gamma = ", gamma, " and epsilon = ", epsilon, " and epsilon_B = ", epsilon_B, "\n")
-
-        j_syn_values[i] = log10(j_syn(ϵ, mps))
-        S_syn_values[i] = log10(S_syn(ϵ, mps))
-        P_syn_values[i] = log10(ϵ*S_syn(ϵ, mps))
+        Energy[i] = (mps.h*nu / 1.602E-12) # energy in [eV]
+        j_syn_values[i] = log10(j_syn(ϵ, mps)) # ERASE THE LOG10 TO GET THE PLOT WITH ENERGY X-AXIS
+        S_syn_values[i] = log10(S_syn(ϵ, mps)) # ERASE THE LOG10 TO GET THE PLOT WITH ENERGY X-AXIS
+        P_syn_values[i] = log10(ϵ*S_syn(ϵ, mps)) # ERASE THE LOG10 TO GET THE PLOT WITH ENERGY X-AXIS
     end
 
     # Plotting the synchrotron emissivity
@@ -139,13 +141,23 @@ function syncPlot(mps)
     # ylabel!(L"\log(S_{syn}) - cgs")
     # savefig("syn_flux_density.png")
 
-    # Plotting the synchrotron spectral power flux  ~ νF(ν)
+    # Plotting the synchrotron spectral power flux  ~ νF(ν) vs FREQUENCY
     plot(
         log_nu, P_syn_values, label = L"\nu S_{syn} (\nu)", 
         title = "Synchrotron spectral power flux", titlefontsize = 10, 
-        ylims=(-16, -5), fmt=:jpg
+        ylims=(-16, -12), xlims=(7, 26), fmt=:jpg
         )
     xlabel!(L"\log(\nu) [Hz]")
     ylabel!(L"\log(\nu S_{syn} (\nu)) [cgs]")
-    #savefig("syn_spectral_power_flux.png")
+    #savefig("syn_spectral_power_flux_FUNC_Frequency.png")
+
+    # Plotting the synchrotron spectral power flux  ~ νF(ν) vs ENERGY (Uchiyama et al. 2005)
+    #plot(
+    #    Energy, P_syn_values, label = L"\nu S_{syn} (\nu)", 
+    #    title = "Synchrotron spectral power flux", titlefontsize = 12, fmt=:jpg,
+    #    xlims=(1.0E-5, 1.0E5), ylims=(1.0E-16, 1.0E-13),
+    #    xaxis=:log10, yaxis=:log10)
+    #xlabel!("Energy [eV]")
+    #ylabel!(L"\nu S_{syn} (\nu) [cgs]")
+    #savefig("syn_spectral_power_flux_FUNC_Energy.png")
 end
