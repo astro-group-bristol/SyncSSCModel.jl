@@ -35,29 +35,29 @@ export MyParamStruct
     "Magnetic field energy density"
     u_B = B^2/8.0*pi
 
-    # PKS0637-752: Values taken from Schwartz et al. 2000 or Tavecchio et al. 2000
+    # PKS0637-752: Values taken from Schwartz et al. 2000 or Tavecchio et al. 2000 or Uchiyama et al. 2005
     "Normalisation of electron density"
     n_e0 = 6.0E-5 # This value should not be bigger (not 500.0) but less
     "Power law index of electron distribution function"
-    p = 2.6             
+    p = 2.7             
     "Minimum Lorentz factor of electrons"
-    γ_min = 10      
+    γ_min = 1.78E3  # Calculated using the expression in section 3.1 Uchiyama et al. 2005
     "Maximum Lorentz factor of electrons"
-    γ_max = 4.0E5      
+    γ_max = 3.21E5  # Calculated using the expression in section 3.1 Uchiyama et al. 2005
     "Redshift"
     z = 0.651
     "Bulk Lorentz factor"
-    Γ = 10.0
+    Γ = 12.0
     "Angle (radians) between the direction of the blob's motion and the direction to the observer"
-    θ = 6.0*pi/180.0
+    θ = 3.5*pi/180.0
     "Radius of emitting region"
-    radius = 1.0E22
+    radius = 3.086E21
 
     "Hubble parameter"
     ho = 0.67
     "Hublle constant in km s^-1 Mpc^-1"
     # Ho = 100.0*ho
-    Ho = 50.0
+    Ho = 71.0
     "Mass of BH in Solar Masses"
     M8 = 1.0E8
 end
