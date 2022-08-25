@@ -7,4 +7,7 @@ mps = MyParamStruct(M8=0.1)
 # Test Synchrotron plot
 syncPlot(mps)
 
+# Test Synchrotron Self-Compton plot
+ssc_Plot(mps)
+
 print("Done!\n")

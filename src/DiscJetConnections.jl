@@ -4,13 +4,17 @@ using Parameters
 using LaTeXStrings
 using HCubature
 using Plots
-gr()
+gr()   # default backend for Plots
 
 export dn_e
 export j_syn
 export S_syn
 export P_syn
 export syncPlot
+
+export j_ssc
+export P_ssc
+export ssc_Plot
 
 export MyParamStruct
 
@@ -37,7 +41,7 @@ export MyParamStruct
 
     # PKS0637-752: Values taken from Schwartz et al. 2000 or Tavecchio et al. 2000 or Uchiyama et al. 2005
     "Normalisation of electron density"
-    n_e0 = 6.0E-5 # This value should not be bigger (not 500.0) but less
+    n_e0 = 6E-5 # This value should not be bigger (not 500.0) but less
     "Power law index of electron distribution function"
     p = 2.7             
     "Minimum Lorentz factor of electrons"
@@ -63,5 +67,6 @@ export MyParamStruct
 end
 
 include("synchrotron.jl")
+include("Compton.jl")
 
 end # module

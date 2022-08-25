@@ -57,17 +57,18 @@ function S_syn(ϵ, mps)
     # doppler factor D(Γ,θ)
     # Γ is the Bulk Lorentz Factor
     # Θ is the angle between the direction of the blob's motion and the direction to the observer
-    # B = 1 / β in the Dermer et al. (1997) paper
     β = sqrt(1.0 - 1.0/mps.Γ^2)
     μ_obs = cos(mps.θ)
     D = 1.0 / (mps.Γ*(1 - μ_obs*β))
     
     # Luminosity Distance dL(z)
     # Convert H_0 km / s / Mpc to cm / s / cm (cgs)
-    #dL = (2.0*mps.c / (mps.Ho * 1.0E5 / 3.086E24 )) * (mps.z+1.0 - sqrt(mps.z+1.0))
-    dL = 1.26E28
+    # dL = (2.0*mps.c / (mps.Ho * 1.0E5 / 3.086E24 )) * (mps.z+1.0 - sqrt(mps.z+1.0))
+    dL = 1.26E28   # This is the Luminosity Distance value for PKS 0637-752
+    
     # Volume of the blob (Sphere with radius in cm) Vb(R)
-    # Rg = 1.5E13 * mps.M8
+    # Rg = 1.5E13 * mps.M8      # Rg is the Gravitational radius
+    # R = 10^3 Rg               # Size of blob calculation (see Dermer et al. 1997 paper)
     Vb = (4.0/3.0) * pi * mps.radius^3
 
     return((D^3 * (1.0+mps.z) * Vb * j_syn(ϵ*(1.0+mps.z)/D, mps)) / dL^2)
@@ -96,6 +97,7 @@ end
 Example synchotron plot for parameters `mps`.
 """
 function syncPlot(mps)
+    print("START SYN")
     # Set up an array of photon frequencies
     # log_10 low frequency 
     log_nu_low = 7.0
@@ -103,8 +105,10 @@ function syncPlot(mps)
     log_nu_high = 26.0
     # create log frequency array
     log_nu = range(log_nu_low, stop=log_nu_high, length=100)
-    # Define the j_syn array as function of frequency
+    nu_values = zeros(length(log_nu))    # Frequency array in normal scales (Hz)
 
+    # Define the array as function of frequency
+    # Set up array for the emissivity and the spectral power flux
     # j_syn : synchrotron emissivity in ergs cm^-3 s^-1 sr^-1 epsilon^-1
     j_syn_values = zeros(length(log_nu))
     # S_syn : synchrotron flux density in ergs cm^-2 s^-1 sr^-1 epsilon^-1
@@ -114,50 +118,95 @@ function syncPlot(mps)
     # Energy : E=hν (Define the x-axis to the energy in [ergs], try to produce fig2 in Uchiyama et al 2005)
     Energy = zeros(length(log_nu))
     
+    # Logarithm scale array
+    logj_syn_values = zeros(length(log_nu))
+    logS_syn_values = zeros(length(log_nu))
+    logP_syn_values = zeros(length(log_nu))
+
     # Calculate j_syn values
     # Calculate S_syn values
     # Calculate P_syn values
     for i in eachindex(j_syn_values)
         nu = 10.0^log_nu[i]
+        nu_values[i] = (nu)     # Frequency values array (Hz) [This line might not really useful as it is already equal to log_nu define above]
+        
         # need to convert photon frequency to epsilon
         ϵ = mps.h*nu/(mps.m_e*mps.c^2)
         
         # print("gamma = ", gamma, " and epsilon = ", epsilon, " and epsilon_B = ", epsilon_B, "\n")
-        Energy[i] = (mps.h*nu / 1.602E-12) # energy in [eV]
-        j_syn_values[i] = log10(j_syn(ϵ, mps)) # ERASE THE LOG10 TO GET THE PLOT WITH ENERGY X-AXIS
-        S_syn_values[i] = log10(S_syn(ϵ, mps)) # ERASE THE LOG10 TO GET THE PLOT WITH ENERGY X-AXIS
-        P_syn_values[i] = log10(ϵ*S_syn(ϵ, mps)) # ERASE THE LOG10 TO GET THE PLOT WITH ENERGY X-AXIS
+        Energy[i] = (mps.h*nu / 1.602E-12) # energy in [eV] X-AXIS
+        
+        j_syn_values[i] = (j_syn(ϵ, mps))
+        logj_syn_values[i] = log10(j_syn(ϵ, mps)) # IF NEEDED
+        
+        S_syn_values[i] = (S_syn(ϵ, mps))
+        logS_syn_values[i] = log10(S_syn(ϵ, mps)) # IF NEEDED
+        
+        P_syn_values[i] = (ϵ*S_syn(ϵ, mps))
+        logP_syn_values[i] = log10(ϵ*S_syn(ϵ, mps)) # IF NEEDED
     end
 
+    print("\nEnergy = ", Energy)
+    print("\n---------------------------")
+    print("\nj_syn = ", j_syn_values)
+    print("\n---------------------------")
+    print("\nlog_j_syn = ", logj_syn_values)
+    print("\n---------------------------")
+    print("\nS_syn = ", S_syn_values)
+    print("\n---------------------------")
+    print("\nlog_S_syn = ", logS_syn_values)
+    print("\n---------------------------")
+    print("\nP_syn = ", P_syn_values)
+    print("\n---------------------------")
+    print("\nlog_P_syn = ", logP_syn_values)
+    
+
     # Plotting the synchrotron emissivity
-    # plot(log_nu, j_syn_values, label = L"j_{syn} (nu)", title = "Synchrotron emissivity", titlefontsize = 10, yaxis=:log10, xlims=(9, 19), ylims=(1.0E-20, 1.0E-12), fmt=:jpg)
-    # xlabel!(L"\log_{10} (\nu)")
-    # ylabel!(L"j_{syn}")
-    # savefig("syn_emissivity.png")
+    plot(
+        nu_values, j_syn_values, label = L"j_{syn} (\nu)",
+        framestyle=:box,
+        title = "Synchrotron emissivity", titlefontsize = 10,
+        xminorticks = 2, yminorticks = 10, xlims=(1E6, 1E27), ylims=(1E-21, 1E-16), fmt=:jpg,
+        xaxis=:log10, yaxis=:log10)
+    xlabel!(latexstring("\$\\nu\$ [Hz]"))
+    ylabel!(latexstring("\$j_{syn}\$ [cgs]"))
+    savefig("syn_emissivity.png")
 
     # Plotting the synchrotron flux density
-    # plot(log_nu, S_syn_values, label = L"\epsilon S_{syn} (\nu)", title = "Synchrotron Flux density", titlefontsize = 10, ylims=(-50, 50), fmt=:jpg)
-    # xlabel!(L"\log(\nu) - Hz")
-    # ylabel!(L"\log(S_{syn}) - cgs")
-    # savefig("syn_flux_density.png")
+    plot(
+        nu_values, S_syn_values, label = L"S_{syn} (\nu)",
+        framestyle=:box,
+        title = "Synchrotron Flux density", titlefontsize = 10,
+        xminorticks = 2, yminorticks = 10, xlims=(1E6, 1E27), ylims=(1E-8, 1E-3), fmt=:jpg,
+        xaxis=:log10, yaxis=:log10)
+    xlabel!(latexstring("\$\\nu\$ [Hz]"))
+    ylabel!(latexstring("\$S_{syn}\$ [cgs]"))
+    savefig("syn_flux_density.png")
 
     # Plotting the synchrotron spectral power flux  ~ νF(ν) vs FREQUENCY
     plot(
-        log_nu, P_syn_values, label = L"\nu S_{syn} (\nu)", 
-        title = "Synchrotron spectral power flux", titlefontsize = 10, 
-        ylims=(-16, -12), xlims=(7, 26), fmt=:jpg
-        )
-    xlabel!(L"\log(\nu) [Hz]")
-    ylabel!(L"\log(\nu S_{syn} (\nu)) [cgs]")
-    #savefig("syn_spectral_power_flux_FUNC_Frequency.png")
+        nu_values, P_syn_values, label = L"\nu S_{syn} (\nu)",
+        framestyle=:box, 
+        title = "Synchrotron spectral power flux", titlefontsize = 10,
+        xminorticks = 2, yminorticks = 10, ylims=(1E-16, 1E-13), xlims=(1E6, 1E27), fmt=:jpg,
+        xaxis=:log10, yaxis=:log10)
+    xlabel!(latexstring("\$\\nu\$ [Hz]"))
+    ylabel!(latexstring("\$\\nu S_{syn} \\left(\\nu \\right)\$ [cgs]"))
+    savefig("syn_spectral_power_flux_FUNC_Frequency.png")
 
     # Plotting the synchrotron spectral power flux  ~ νF(ν) vs ENERGY (Uchiyama et al. 2005)
-    #plot(
-    #    Energy, P_syn_values, label = L"\nu S_{syn} (\nu)", 
-    #    title = "Synchrotron spectral power flux", titlefontsize = 12, fmt=:jpg,
-    #    xlims=(1.0E-5, 1.0E5), ylims=(1.0E-16, 1.0E-13),
-    #    xaxis=:log10, yaxis=:log10)
-    #xlabel!("Energy [eV]")
-    #ylabel!(L"\nu S_{syn} (\nu) [cgs]")
-    #savefig("syn_spectral_power_flux_FUNC_Energy.png")
+    plot(
+        Energy, P_syn_values, label = L"\nu S_{syn} (\nu)",
+        framestyle=:box,
+        title = "Synchrotron spectral power flux", titlefontsize = 10, fmt=:jpg,
+        xlims=(1.0E-7, 1.0E7), ylims=(1.0E-16, 1.0E-13), xminorticks = 2, yminorticks = 10,
+        xaxis=:log10, yaxis=:log10)
+    xlabel!(latexstring("\$Energy\$ [eV]"))
+    ylabel!(latexstring("\$\\nu S_{syn} \\left(\\nu \\right)\$ [cgs]"))
+    savefig("syn_spectral_power_flux_FUNC_Energy.png")
+
+    print("\nEND SYN")
+
+    # TRY TO USE SUBPLOT TO DISPLAY ALL THE PLOTS. JUST WONDERING WHAT IS THE BEST WHY IN JULIA?
+
 end
