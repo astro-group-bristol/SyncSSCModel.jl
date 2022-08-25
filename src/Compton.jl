@@ -56,8 +56,8 @@ function P_ssc(ϵ, mps)
 
     # Luminosity Distance dL(z)
     # Convert H_0 km / s / Mpc to cm / s / cm (cgs)
-    # dL = (2.0*mps.c / (mps.Ho * 1.0E5 / 3.086E24 )) * (mps.z+1.0 - sqrt(mps.z+1.0))
-    dL = 1.26E28  # This is the Luminosity Distance value for PKS 0637-752
+    dL = (2.0*mps.c / (mps.Ho * 1.0E5 / 3.086E24 )) * (mps.z+1.0 - sqrt(mps.z+1.0))
+    # dL = 1.26E28  # This is the Luminosity Distance value for PKS 0637-752
 
     # Volume of the blob (Sphere with radius in cm) Vb(R)
     # Rg = 1.5E13 * mps.M8      # Rg is the Gravitational radius
@@ -114,31 +114,31 @@ function ssc_Plot(mps)
 
     # VISUALIZATION I (j_ssc vs ν) & (P_ssc vs ν) normal scales
     # Plotting the synchrotron self-Compton emissivity j_ssc
-    plot(
+    p1a = plot(
         log_nu, j_ssc_values, label = L"j_{ssc} (\nu)", 
         framestyle=:box, 
         title = "Synchrotron self-compton emissivity", titlefontsize = 10,
-        xminorticks= 3, xlims=(6, 27), yminorticks=10, ylims=(-6.0E-22, 5.0E-23), fmt=:jpg)
-    xlabel!(L"\log_{10} (\nu)")
-    ylabel!(L"\log_{10} [j_{ssc} (\nu)]")
-    savefig("all_ssc_emissivity_all.png")
+        xminorticks= 3, xlims=(6, 27), yminorticks=10, ylims=(-6.0E-22, 5.0E-23), fmt=:pdf)
+    xlabel!(latexstring("\$\\log_{10}\\left(\\nu \\right)\$ [Hz]"))
+    ylabel!(latexstring("\$\\log_{10}\\left[j_{ssc} \\left( \\nu \\right) \\right]\$ [cgs]"))
+    #savefig("all_ssc_emissivity_all.png")
     # ----
     # Plotting the synchrotron self-Compton spectral power flux  ~ νF(ν) vs FREQUENCY
-    plot(
-        log_nu, P_ssc_values, label = L"\nu S_{syn} (\nu)",
+    p1b = plot(
+        log_nu, P_ssc_values, label = L"\nu S_{ssc} (\nu)",
         framestyle=:box,     
         title = "Synchrotron self-compton Spectral power Flux", titlefontsize = 10,
-        xminorticks= 3, xlims=(6, 27), yminorticks=10, ylims=(-2.0E-19, 2.0E-19), fmt=:jpg)
-    xlabel!(L"\log(\nu) [Hz]")
-    ylabel!(L"\log(\nu S_{syn} (\nu)) [cgs]")
-    savefig("all_syn_spectral_power_flux_FUNC_Frequency.png")
+        xminorticks= 3, xlims=(6, 27), yminorticks=10, ylims=(-2.0E-19, 2.0E-19), fmt=:pdf)
+    xlabel!(latexstring("\$\\log_{10}\\left(\\nu \\right)\$ [Hz]"))
+    ylabel!(latexstring("\$\\log_{10}\\left[ \\nu S_{ssc} \\left( \\nu \\right) \\right]\$ [cgs]"))
+    #savefig("all_syn_spectral_power_flux_FUNC_Frequency.png")
 
-    # POSITIVE VALUES Method I
+    #= POSITIVE VALUES Method I
     # TAKE THE VALUES MANUALLY
-    Pos_nu_j = nu_values[41:87]
-    Pos_j_ssc_values = j_ssc_values[41:87]
-    Pos_nu_P = nu_values[46:92]
-    Pos_P_ssc_values = P_ssc_values[46:92]
+    Pos_nu_j = nu_values[11:100]
+    Pos_j_ssc_values = j_ssc_values[11:100]
+    Pos_nu_P = nu_values[11:100]
+    Pos_P_ssc_values = P_ssc_values[11:100]
     logPos_j_ssc_values = zeros(length(Pos_nu_j))
     logPos_P_ssc_values = zeros(length(Pos_nu_P))
 
@@ -153,24 +153,24 @@ function ssc_Plot(mps)
 
     # VISUALIZATION II (j_ssc vs ν) & (P_ssc vs ν) log scales method 1
     # Plotting the synchrotron self-Compton emissivity j_ssc
-    plot(
+    p2a = plot(
         Pos_nu_j, logPos_j_ssc_values, label = L"j_{ssc} (\nu)", 
         framestyle=:box, 
         title = "Synchrotron self-compton emissivity", titlefontsize = 10,
-        xminorticks= 3, xlims=(6, 27), yminorticks=10, ylims=(-37, -29), fmt=:jpg)
+        xminorticks= 3, xlims=(6, 27), yminorticks=10, ylims=(-37, -29), fmt=:pdf)
     xlabel!(L"\log_{10} (\nu)")
     ylabel!(L"\log_{10} [j_{ssc} (\nu)]")
-    savefig("I_ssc_emissivity.png")
+    #savefig("I_ssc_emissivity.png")
     # ----
     # Plotting the synchrotron self-Compton spectral power flux  ~ νF(ν) vs FREQUENCY
-    plot(
+    p2b = plot(
         Pos_nu_P, logPos_P_ssc_values, label = L"\nu S_{syn} (\nu)",
         framestyle=:box,     
         title = "Synchrotron self-compton Spectral power Flux", titlefontsize = 10,
-        xminorticks= 3, xlims=(6, 27), yminorticks=10, ylims=(-22, -18), fmt=:jpg)
+        xminorticks= 3, xlims=(6, 27), yminorticks=10, ylims=(-18, -15), fmt=:pdf)
     xlabel!(L"\log(\nu) [Hz]")
     ylabel!(L"\log(\nu S_{syn} (\nu)) [cgs]")
-    savefig("I_ssc_spectral_power_flux_FUNC_Frequency.png")
+    #savefig("I_ssc_spectral_power_flux_FUNC_Frequency.png") =#
 
 
     # POSITIVE VALUES Method II
@@ -178,7 +178,7 @@ function ssc_Plot(mps)
     j_ssc_values_2 = j_ssc_values
     for i in eachindex(j_ssc_values_2)
         if j_ssc_values_2[i] <= 0
-            j_ssc_values_2[i] = 1
+            j_ssc_values_2[i] = 0
         else
             j_ssc_values_2[i] = j_ssc_values_2[i]
         end
@@ -189,7 +189,7 @@ function ssc_Plot(mps)
     P_ssc_values_2 = P_ssc_values
     for i in eachindex(P_ssc_values_2)
         if P_ssc_values_2[i] <= 0
-            P_ssc_values_2[i] = 1
+            P_ssc_values_2[i] = 0
         else
             P_ssc_values_2[i] = P_ssc_values_2[i]
         end
@@ -207,27 +207,52 @@ function ssc_Plot(mps)
 
     # VISUALIZATION III (j_ssc vs ν) & (P_ssc vs ν) log scales method 2
     # Plotting the synchrotron self-Compton emissivity j_ssc
-    plot(
+    p3a = plot(
+        log_nu, log_j_ssc_values_2, label = L"j_{ssc} (\nu)", 
+        framestyle=:box, 
+        title = "Synchrotron self-compton emissivity", titlefontsize = 10,
+        xminorticks= 3, xlims=(6, 27), yminorticks=10, ylims=(-40, -25), fmt=:pdf)
+    xlabel!(latexstring("\$\\log_{10}\\left(\\nu \\right)\$ [Hz]"))
+    ylabel!(latexstring("\$\\log_{10}\\left[j_{ssc} \\left( \\nu \\right) \\right]\$ [cgs]"))
+    #savefig("II_ssc_emissivity.png")
+    # ----
+    # Plotting the synchrotron self-Compton spectral power flux  ~ νF(ν) vs FREQUENCY
+    p3b = plot(
+        log_nu, log_P_ssc_values_2, label = L"\nu S_{ssc} (\nu)",
+        framestyle=:box,     
+        title = "Synchrotron self-compton Spectral power Flux", titlefontsize = 10,
+        xminorticks= 3, xlims=(6, 27), yminorticks=10, ylims=(-25, -15), fmt=:pdf)
+    xlabel!(latexstring("\$\\log_{10}\\left(\\nu \\right)\$ [Hz]"))
+    ylabel!(latexstring("\$\\log_{10}\\left[ \\nu S_{ssc} \\left( \\nu \\right) \\right]\$ [cgs]"))
+    #savefig("II_ssc_spectral_power_flux_FUNC_Frequency.png")
+
+    print("\nEND SSC")
+
+    # TRY TO USE SUBPLOT TO DISPLAY ALL THE PLOTS. JUST WONDERING WHAT IS THE BEST WHY IN JULIA?
+    #l = @layout [a b; c d] ; plot(p1a, p1b, p3a, p3b, layout = l)
+    l = @layout [a; b]
+    plot(p3a, p3b, layout = l)
+    #savefig("Test_Ssc_subplot.pdf")
+end
+
+
+    #= VISUALIZATION III (j_ssc vs ν) & (P_ssc vs ν) log scales method 2
+    # Plotting the synchrotron self-Compton emissivity j_ssc
+    p3a = plot(
         log_nu, log_j_ssc_values_2, label = L"j_{ssc} (\nu)", 
         framestyle=:box, 
         title = "Synchrotron self-compton emissivity", titlefontsize = 10,
         xminorticks= 3, xlims=(6, 27), yminorticks=10, ylims=(-37, 0), fmt=:jpg)
     xlabel!(L"\log_{10} (\nu)")
     ylabel!(L"\log_{10} [j_{ssc} (\nu)]")
-    savefig("II_ssc_emissivity.png")
+    #savefig("II_ssc_emissivity.png")
     # ----
     # Plotting the synchrotron self-Compton spectral power flux  ~ νF(ν) vs FREQUENCY
-    plot(
+    p3b = plot(
         log_nu, log_P_ssc_values_2, label = L"\nu S_{syn} (\nu)",
         framestyle=:box,     
         title = "Synchrotron self-compton Spectral power Flux", titlefontsize = 10,
-        xminorticks= 3, xlims=(6, 27), yminorticks=10, ylims=(-22, 0), fmt=:jpg)
+        xminorticks= 3, xlims=(6, 27), yminorticks=10, ylims=(-22, 0), fmt=:pdf)
     xlabel!(L"\log(\nu) [Hz]")
     ylabel!(L"\log(\nu S_{syn} (\nu)) [cgs]")
-    savefig("II_ssc_spectral_power_flux_FUNC_Frequency.png")
-
-    print("\nEND SSC")
-
-    # TRY TO USE SUBPLOT TO DISPLAY ALL THE PLOTS. JUST WONDERING WHAT IS THE BEST WHY IN JULIA?
-
-end
+    #savefig("II_ssc_spectral_power_flux_FUNC_Frequency.png") =#
