@@ -90,6 +90,18 @@ function P_syn(ϵ, mps)
     return(ϵ * S_syn(ϵ, mps))
 end
 
+# HERE I'M TRYING TO REPRODUCE THE SYNCHROTRON SELF-COMPTON SPECTRA POWER FLUX
+# ON JUST ADDING SOME VALUES TAKEN FROM DERMER ET AL 1997 PAPER
+function P_syn_ssc(ϵ, mps)
+    β = sqrt(1.0 - 1.0/mps.Γ^2)
+    μ_obs = cos(mps.θ)
+    D = 1.0 / (mps.Γ*(1 - μ_obs*β))
+    α = (mps.p - 1) / 2
+
+    Σc = min(D/(ϵ*(1+mps.z)), mps.γ_max^2 * mps.ϵ_B, ϵ*(1+mps.z)/(D*mps.γ_min^2)) / max(mps.γ_min^2 * mps.ϵ_B, ϵ*(1+mps.z)/(D*mps.γ_max^2))
+    P_syn_ssc = P_syn(ϵ, mps) * (2/3) * mps.n_e0 * mps.σ_T * mps.radius * log(Σc)
+    return(P_syn_ssc)
+end
 
 """
     syncPlot(mps)
@@ -117,15 +129,19 @@ function syncPlot(mps)
     P_syn_values = zeros(length(log_nu))
     # Energy : E=hν (Define the x-axis to the energy in [ergs], try to produce fig2 in Uchiyama et al 2005)
     Energy = zeros(length(log_nu))
+    # P_syn_ssc : synchrotron self Compton spectral power flux in cgs units ergs cm^-2 s^-1 Hz^-1
+    P_syn_ssc_values = zeros(length(log_nu))    
     
     # Logarithm scale array
     logj_syn_values = zeros(length(log_nu))
     logS_syn_values = zeros(length(log_nu))
     logP_syn_values = zeros(length(log_nu))
+    logP_syn_ssc_values = zeros(length(log_nu))
 
     # Calculate j_syn values
     # Calculate S_syn values
     # Calculate P_syn values
+    # Calculate P_syn_ssc_values
     for i in eachindex(j_syn_values)
         nu = 10.0^log_nu[i]
         nu_values[i] = (nu)     # Frequency values array (Hz) [This line might not really useful as it is already equal to log_nu define above]
@@ -144,6 +160,14 @@ function syncPlot(mps)
         
         P_syn_values[i] = (ϵ*S_syn(ϵ, mps))
         logP_syn_values[i] = log10(ϵ*S_syn(ϵ, mps)) # IF NEEDED
+
+        P_syn_ssc_values[i] = (P_syn_ssc(ϵ, mps))
+        if P_syn_ssc_values[i] <= 0
+            P_syn_ssc_values[i] = 0
+        else
+            P_syn_ssc_values[i] = P_syn_ssc_values[i]
+        end
+        logP_syn_ssc_values[i] = log10(P_syn_ssc_values[i])
     end
 
     print("\nEnergy = ", Energy)
@@ -159,9 +183,13 @@ function syncPlot(mps)
     print("\nP_syn = ", P_syn_values)
     print("\n---------------------------")
     print("\nlog_P_syn = ", logP_syn_values)
+    print("\n---------------------------")
+    print("\nP_syn_ssc = ", P_syn_ssc_values)
+    print("\n---------------------------")
+    print("\nlog_P_syn_ssc = ", logP_syn_ssc_values)
     
 
-    # Plotting the synchrotron emissivity
+    #= Plotting the synchrotron emissivity
     plot(
         nu_values, j_syn_values, label = L"j_{syn} (\nu)",
         framestyle=:box,
@@ -170,7 +198,7 @@ function syncPlot(mps)
         xaxis=:log10, yaxis=:log10)
     xlabel!(latexstring("\$\\nu\$ [Hz]"))
     ylabel!(latexstring("\$j_{syn}\$ [cgs]"))
-    savefig("syn_emissivity.png")
+    #savefig("syn_emissivity.png")
 
     # Plotting the synchrotron flux density
     plot(
@@ -181,7 +209,7 @@ function syncPlot(mps)
         xaxis=:log10, yaxis=:log10)
     xlabel!(latexstring("\$\\nu\$ [Hz]"))
     ylabel!(latexstring("\$S_{syn}\$ [cgs]"))
-    savefig("syn_flux_density.png")
+    #savefig("syn_flux_density.png")
 
     # Plotting the synchrotron spectral power flux  ~ νF(ν) vs FREQUENCY
     plot(
@@ -203,10 +231,35 @@ function syncPlot(mps)
         xaxis=:log10, yaxis=:log10)
     xlabel!(latexstring("\$Energy\$ [eV]"))
     ylabel!(latexstring("\$\\nu S_{syn} \\left(\\nu \\right)\$ [cgs]"))
-    savefig("syn_spectral_power_flux_FUNC_Energy.png")
+    #savefig("syn_spectral_power_flux_FUNC_Energy.png") =#
 
     print("\nEND SYN")
 
     # TRY TO USE SUBPLOT TO DISPLAY ALL THE PLOTS. JUST WONDERING WHAT IS THE BEST WHY IN JULIA?
+    p1 = plot(nu_values, j_syn_values, label = L"j_{syn} (\nu)", framestyle=:box, title = "Synchrotron emissivity", titlefontsize = 10, xminorticks = 2, yminorticks = 10, xlims=(1E6, 1E27), ylims=(1E-21, 1E-16), fmt=:pdf, xaxis=:log10, yaxis=:log10)
+    xlabel!(latexstring("\$\\nu\$ [Hz]"))
+    ylabel!(latexstring("\$j_{syn}\$ [cgs]"))
+    p2 = plot(nu_values, S_syn_values, label = L"S_{syn} (\nu)", framestyle=:box, title = "Synchrotron Flux density", titlefontsize = 10, xminorticks = 2, yminorticks = 10, xlims=(1E6, 1E27), ylims=(1E-8, 1E-3), fmt=:pdf, xaxis=:log10, yaxis=:log10)
+    xlabel!(latexstring("\$\\nu\$ [Hz]"))
+    ylabel!(latexstring("\$S_{syn}\$ [cgs]"))
+    p3 = plot(nu_values, P_syn_values, label = L"\nu S_{syn} (\nu)", framestyle=:box, title = "Synchrotron spectral power flux", titlefontsize = 10, xminorticks = 2, yminorticks = 10, ylims=(1E-16, 1E-13), xlims=(1E6, 1E27), fmt=:pdf, xaxis=:log10, yaxis=:log10)
+    xlabel!(latexstring("\$\\nu\$ [Hz]"))
+    ylabel!(latexstring("\$\\nu S_{syn} \\left(\\nu \\right)\$ [cgs]"))
+    p4 = plot(Energy, P_syn_values, label = L"\nu S_{syn} (\nu)", framestyle=:box, title = "Synchrotron spectral power flux", titlefontsize = 10, fmt=:pdf, xlims=(1.0E-7, 1.0E7), ylims=(1.0E-16, 1.0E-13), xminorticks = 2, yminorticks = 10, xaxis=:log10, yaxis=:log10)
+    xlabel!(latexstring("\$Energy\$ [eV]"))
+    ylabel!(latexstring("\$\\nu S_{syn} \\left(\\nu \\right)\$ [cgs]"))
+    l = @layout [a b; c d]
+    plot(p1, p2, p3, p4, layout = l)
+    savefig("Test_Sync_subplot.pdf")
+
+    # Plotting the synchrotron self-Compton spectral power flux  ~ νF(ν) vs FREQUENCY
+    plot(
+        log_nu, logP_syn_ssc_values, label = L"\nu S_{syn} (\nu)",
+        framestyle=:box,     
+        title = "Synchrotron self-compton Spectral power Flux", titlefontsize = 10,
+        xminorticks= 3, xlims=(6, 27), yminorticks=10, ylims=(-22, 0), fmt=:pdf)
+    xlabel!(L"\log(\nu) [Hz]")
+    ylabel!(L"\log(\nu S_{syn} (\nu)) [cgs]")
+    savefig("syn_ssc_spectral_power_flux_FUNC_Frequency.png")
 
 end
