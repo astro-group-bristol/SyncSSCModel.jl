@@ -22,7 +22,6 @@ function dn_e(γ, mps)
     return dn_e
 end
 
-
 """
     j_syn(ϵ, mps)
 
@@ -36,7 +35,6 @@ j_{syn}(\\epsilon, \\Omega; x) = \\frac{c \\sigma_T u_B}{6 \\pi \\epsilon_B} \\l
 """
 function j_syn(ϵ, mps)
     # need to convert photon frequency to characteristic lorentz factor gamma
-    # *** this needs to be checked and understood - might be wrong! ***
     γ = sqrt(ϵ / mps.ϵ_B)
     return((mps.c*mps.σ_T*mps.u_B)/(6.0*pi*mps.ϵ_B)) * sqrt(ϵ/mps.ϵ_B) * dn_e(γ, mps)
 end
@@ -60,18 +58,11 @@ function S_syn(ϵ, mps)
     β = sqrt(1.0 - 1.0/mps.Γ^2)
     μ_obs = cos(mps.θ)
     D = 1.0 / (mps.Γ*(1 - μ_obs*β))
-    
-    # Luminosity Distance dL(z)
-    # Convert H_0 km / s / Mpc to cm / s / cm (cgs)
-    # dL = (2.0*mps.c / (mps.Ho * 1.0E5 / 3.086E24 )) * (mps.z+1.0 - sqrt(mps.z+1.0))
-    dL = 1.26E28   # This is the Luminosity Distance value for PKS 0637-752
-    
+        
     # Volume of the blob (Sphere with radius in cm) Vb(R)
-    # Rg = 1.5E13 * mps.M8      # Rg is the Gravitational radius
-    # R = 10^3 Rg               # Size of blob calculation (see Dermer et al. 1997 paper)
     Vb = (4.0/3.0) * pi * mps.radius^3
 
-    return((D^3 * (1.0+mps.z) * Vb * j_syn(ϵ*(1.0+mps.z)/D, mps)) / dL^2)
+    return((D^3 * (1.0+mps.z) * Vb * j_syn(ϵ*(1.0+mps.z)/D, mps)) / mps.dL^2)
 end
 
 
@@ -101,6 +92,21 @@ function P_syn_ssc(ϵ, mps)
     Σc = min(D/(ϵ*(1+mps.z)), mps.γ_max^2 * mps.ϵ_B, ϵ*(1+mps.z)/(D*mps.γ_min^2)) / max(mps.γ_min^2 * mps.ϵ_B, ϵ*(1+mps.z)/(D*mps.γ_max^2))
     P_syn_ssc = P_syn(ϵ, mps) * (2/3) * mps.n_e0 * mps.σ_T * mps.radius * log(Σc)
     return(P_syn_ssc)
+end
+
+"""
+    syncSpec(log_ν, flux_density, mps)
+
+Populate the synchrotron spectrum `flux_density` with frequency bins given by `log_ν`` for parameters `mps``
+"""
+function syncSpec(log_ν, mps)
+    ν = 10.0.^log_ν
+    ϵ = mps.h*ν/(mps.m_e*mps.c^2)
+    spec = zeros(mps.ν_n)
+    for ix in range(1, mps.ν_n)
+        spec[ix] = S_syn(ϵ[ix], mps)
+    end
+    return(spec)
 end
 
 """

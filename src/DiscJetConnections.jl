@@ -10,6 +10,8 @@ export dn_e
 export j_syn
 export S_syn
 export P_syn
+export syncSpec
+export comptonSpec
 export syncPlot
 
 export j_ssc
@@ -23,6 +25,7 @@ export MyParamStruct
     # set the default type of all parameters
     @deftype Float64
 
+    # Physical constants
     "Mass of electron in g"
     m_e = 9.1093897E-28
     "Speed of light in cm s^-1"
@@ -32,18 +35,14 @@ export MyParamStruct
     "Thomson cross section in cm^2"
     σ_T = 0.66524616E-24
     
+    # Parameters specific to the physics of the problem
     "Magnetic field strength in Gauss"
     B = 1.5E-5 # PKS0637-752
     #B = 2.8E-6 # Pictor A  
     #B = [1E-6, 1E-4, 1E-2] # Just to test for a list of B-values
-    "Cyclotron energy in units of m_e*c^2"
-    ϵ_B = B/4.414E13    # Dermer 1995 below eq.8
-    "Magnetic field energy density"
-    u_B = B^2/8.0*pi
-
     # PKS0637-752: Values taken from Schwartz et al. 2000 or Tavecchio et al. 2000 or Uchiyama et al. 2005
     "Normalisation of electron density in cm^-3"
-    n_e0 = 6E-5 # # PKS0637-752
+    n_e0 = 6.0E-5 # # PKS0637-752
     #n_e0 = 485 # Pictor A
     #n_e0 = [1E-5, 10, 450] # Just to test for a list of n_e0-values
     "Power law index of electron distribution function"
@@ -59,6 +58,8 @@ export MyParamStruct
     "Redshift"
     z = 0.651 # PKS0637-752
     #z = 0.035 # Pictor A
+    "Luminosity distance in cm"
+    dL = 1.26E28
     "Bulk Lorentz factor"
     Γ = 12.0 # PKS0637-752
     #Γ = 1 # Pictor A
@@ -70,16 +71,31 @@ export MyParamStruct
     "Radius of emitting region"
     radius = 3.086E21 # PKS0637-752
     #radius = 7.7E20 # Pictor A
+    "Mass of BH in Solar Masses"
+    M_BH = 1.0E8
 
     "Hubble parameter"
     ho = 0.67
-    "Hublle constant in km s^-1 Mpc^-1 in cgs units the Hubble constant should be in the units of s^-1"
+    "Hubble constant in km s^-1 Mpc^-1 in cgs units the Hubble constant should be in the units of s^-1"
     # Hubble Constant = (50-100) km s^-1 Mpc^-1 = (1.6-3.2) 10^-18 s^-1
     # Ho = 100.0*ho
     Ho = 71.0 # PKS0637-752
     #Ho = 50 # Pictor A
-    "Mass of BH in Solar Masses"
-    M8 = 1.0E8
+
+    # Calculated constants needed needed for calculations
+    # I think we should move these to a function rather than have them as "parameters" because they could get out of sync
+    "Cyclotron energy in units of m_e*c^2"
+    ϵ_B = B/4.414E13    # Dermer 1995 below eq.8
+    "Magnetic field energy density"
+    u_B = B^2/(8.0*pi)
+
+    # Binning for problem
+    # log_10 low frequency 
+    log_ν_low = 7.0
+    # log_10 high frequency
+    log_ν_high = 26.0
+    # number of logarithmic frequency bins
+    ν_n::Int = 100
 end
 
 include("synchrotron.jl")
