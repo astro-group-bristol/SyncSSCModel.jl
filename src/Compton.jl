@@ -10,17 +10,18 @@ j_{SSC}(\\epsilon, \\Omega; x) = \\frac{c \\sigma_T^2 n_{e0}^2 u_B r_b}{9 \\pi \
 ```
 """
 function j_ssc(ϵ, mps)
-    # need to convert photon frequency to characteristic lorentz factor gamma
-    # *** this needs to be checked and understood - might be wrong! ***
     γ = sqrt(ϵ / mps.ϵ_B)
-
     # α is the Spectral Index as a function of the power law index
-    α = (mps.p - 1) / 2
+    α = (mps.p - 1.0) / 2.0
 
     # Σ_c is the Compton synchrotron logarithm (see [Gould 1979](https://ui.adsabs.harvard.edu/abs/1979A%26A....76..306G/abstract))
     Σ_c = min(ϵ^-1, ϵ/mps.γ_min^2, mps.ϵ_B*mps.γ_max^2) / max(mps.ϵ_B*mps.γ_min^2, ϵ/mps.γ_max^2)
     
-    return(((mps.c * mps.σ_T^2 * mps.n_e0^2 * mps.u_B * mps.radius) / (9.0 * pi * mps.ϵ_B)) * (ϵ/mps.ϵ_B)^-α * log(Σ_c))
+    if Σ_c > 1.0
+        return(((mps.c * mps.σ_T^2 * mps.n_e0^2 * mps.u_B * mps.radius) / (9.0 * pi * mps.ϵ_B)) * (ϵ/mps.ϵ_B)^-α * log(Σ_c))
+    else
+        return(0.0)
+    end
 end
 
 
@@ -46,17 +47,18 @@ function P_ssc(ϵ, mps)
     # Θ is the angle between the direction of the blob's motion and the direction to the observer
     β = sqrt(1.0 - 1.0/mps.Γ^2)
     μ_obs = cos(mps.θ)
-    D = 1.0 / (mps.Γ*(1 - μ_obs*β))
+    D = 1.0 / (mps.Γ*(1.0 - μ_obs*β))
 
     # Need to convert photon frequency to characteristic lorentz factor gamma
     γ = sqrt(ϵ / mps.ϵ_B)
 
     # α is the Spectral Index as a function of the power law index
-    α = (mps.p - 1) / 2
+    α = (mps.p - 1.0) / 2.0
 
     # Luminosity Distance dL(z)
+    # Updated to use luminosity distance in parameter block mps.dL
     # Convert H_0 km / s / Mpc to cm / s / cm (cgs)
-    dL = (2.0*mps.c / (mps.Ho * 1.0E5 / 3.086E24 )) * (mps.z+1.0 - sqrt(mps.z+1.0))
+    # dL = (2.0*mps.c / (mps.Ho * 1.0E5 / 3.086E24 )) * (mps.z+1.0 - sqrt(mps.z+1.0))
     # dL = 1.26E28  # This is the Luminosity Distance value for PKS 0637-752
 
     # Volume of the blob (Sphere with radius in cm) Vb(R)
@@ -65,11 +67,31 @@ function P_ssc(ϵ, mps)
     Vb = (4.0/3.0) * pi * mps.radius^3
 
     # Σc is the transformed Compton synchrotron logarithm in EQUATION 25 of Dermer et al. 1997 paper
-    Σc = min(D/(ϵ*(1+mps.z)), mps.γ_max^2 * mps.ϵ_B, ϵ*(1+mps.z)/(D*mps.γ_min^2)) / max(mps.γ_min^2 * mps.ϵ_B, ϵ*(1+mps.z)/(D*mps.γ_max^2))
+    Σ_c = min(D/(ϵ*(1.0+mps.z)), mps.γ_max^2 * mps.ϵ_B, ϵ*(1.0+mps.z)/(D*mps.γ_min^2)) / max(mps.γ_min^2 * mps.ϵ_B, ϵ*(1+mps.z)/(D*mps.γ_max^2))
 
-    return((D^(3+α) * (mps.c*mps.σ_T^2*mps.n_e0^2*mps.u_B*mps.radius*Vb) * (1.0+mps.z)^(1-α) * (ϵ/mps.ϵ_B)^(1-α) * log(Σc)) / (9*pi*dL^2))
+    if Σ_c > 1.0
+        return((D^(3.0+α) * (mps.c*mps.σ_T^2*mps.n_e0^2*mps.u_B*mps.radius*Vb) * (1.0+mps.z)^(1.0-α) * (ϵ/mps.ϵ_B)^(1.0-α) * log(Σ_c)) / (9.0*pi*mps.dL^2))
+    else
+        return(0.0)
+    end
 end
 
+
+"""
+    comptonSpec(log_ν, flux_density, mps)
+
+Populate the compton spectrum `flux_density` with frequency bins given by `log_ν`` for parameters `mps``
+"""
+function comptonSpec(log_ν, mps)
+    ν = 10.0.^log_ν
+    ϵ = mps.h*ν/(mps.m_e*mps.c^2)
+    spec = zeros(mps.ν_n)
+    for ix in range(1, mps.ν_n)
+        # Note divide by epsilon to get to flux density for comparison with synchrotron spectrum
+        spec[ix] = P_ssc(ϵ[ix], mps) / ϵ[ix]
+    end
+    return(spec)
+end
 
 """
     ssc_Plot(mps)
