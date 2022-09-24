@@ -33,7 +33,7 @@ Synchrotron Self-Compton (SSC) Spectral Power Flux at observed photon energy `ϵ
 This is equivalent to `νF(ν)` and presented in equation 24 of [Dermer et al. (1997)](https://ui.adsabs.harvard.edu/abs/1997ApJS..109..103D/abstract).
 
 ```math
-P_{ssc}(\\epsilon, \\Omega; x) = D^(3+α) * \\frac{c \\sigma_T^2 n_{e0}^2 u_B r_b V_b}{9 \\pi d_L^2} \\left( 1+z \\right)^{1 - \\alpha} * \\left( \\frac{\\epsilon}{\\epsilon_B} \\right) \\ln{\\overline{\\Sigma_c}}
+P_{ssc}(\\epsilon, \\Omega; x) = D^{(3+α)} \\frac{c \\sigma_T^2 n_{e0}^2 u_B r_b V_b}{9 \\pi d_L^2} \\left( 1+z \\right)^{1 - \\alpha} \\left( \\frac{\\epsilon}{\\epsilon_B} \\right) \\ln{\\overline{\\Sigma_c}}
 ```
 where ``\\ln{\\overline{\\Sigma_c}}`` is the transformed Compton-Synchrotron logarithm in equation 25
 """
@@ -78,7 +78,7 @@ end
 """
     comptonSpec(log_ν, mps)
 
-Populate the compton spectrum `flux_density` with frequency bins given by `log_ν`` for parameters `mps``
+Populate the compton spectrum `flux_density` with frequency bins given by `log_ν` for parameters `mps`
 """
 function comptonSpec(log_ν, mps)
     ν = 10.0.^log_ν

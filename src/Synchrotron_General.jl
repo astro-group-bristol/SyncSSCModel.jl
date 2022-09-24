@@ -20,9 +20,9 @@ N(E) is the electron distribution with power law index p equal to
 ```math
 N(E) = \\kappa E^{-p}
 ```
-U is the Einstein's mass equation and dU its derivative
+E is the Einstein's mass equation and dE its derivative such that
 ```math
-\\U = \\gamma m_e c^2
+E = \\gamma m_e c^2
 ```
 and
 ```math
