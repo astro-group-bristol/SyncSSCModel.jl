@@ -95,7 +95,7 @@ function P_syn_ssc(ϵ, mps)
 end
 
 """
-    syncSpec(log_ν, flux_density, mps)
+    syncSpec(log_ν, mps)
 
 Populate the synchrotron spectrum `flux_density` with frequency bins given by `log_ν`` for parameters `mps``
 """

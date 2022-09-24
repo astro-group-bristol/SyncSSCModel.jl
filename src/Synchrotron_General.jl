@@ -29,7 +29,6 @@ and
 \\alpha = \\frac{p-1}{2}
 ```
 """
-
 function j_nu(mps, ν)
     C1 = (mps.σ_T*mps.c)/(3*mps.mu_o)
     C2 = mps.m_e * mps.c^2

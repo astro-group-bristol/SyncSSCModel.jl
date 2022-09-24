@@ -11,7 +11,7 @@ dn_e(γ, mps)
 j_syn(ϵ, mps)
 S_syn(ϵ, mps)
 P_syn(ϵ, mps)
-syncSpec(log_ν, flux_density, mps)
+syncSpec(log_ν, mps)
 syncPlot(mps)
 ```
 
@@ -20,6 +20,6 @@ syncPlot(mps)
 ```@docs
 j_ssc(ϵ, mps)
 P_ssc(ϵ, mps)
-comptonSpec(log_ν, flux_density, mps)
+comptonSpec(log_ν, mps)
 ssc_Plot(mps)
 ```

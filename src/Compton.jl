@@ -30,18 +30,16 @@ end
     
 Synchrotron Self-Compton (SSC) Spectral Power Flux at observed photon energy `ϵ`.
 
-This is equivalent to \\nu F(\\nu) and presented in equation 24 of [Dermer et al. (1997)](https://ui.adsabs.harvard.edu/abs/1997ApJS..109..103D/abstract).
+This is equivalent to `νF(ν)` and presented in equation 24 of [Dermer et al. (1997)](https://ui.adsabs.harvard.edu/abs/1997ApJS..109..103D/abstract).
 
 ```math
 P_{ssc}(\\epsilon, \\Omega; x) = D^(3+α) * \\frac{c \\sigma_T^2 n_{e0}^2 u_B r_b V_b}{9 \\pi d_L^2} \\left( 1+z \\right)^{1 - \\alpha} * \\left( \\frac{\\epsilon}{\\epsilon_B} \\right) \\ln{\\overline{\\Sigma_c}}
 ```
-
-where \\ln{\\overline{\\Sigma_c}} is the transformed Compton-Synchrotron logarithm in equation 25
-
+where ``\\ln{\\overline{\\Sigma_c}}`` is the transformed Compton-Synchrotron logarithm in equation 25
 """
-# NOTE THAT THE CALCULATION OF THE SPECTRAL POWER FLUX HERE DOES NOT DEPEND ON THE EMISSIVITY 
-# I JUST USE DIRECTLY THE EQUATION 24 IN DERMER ET AL. 1997 PAPER
 function P_ssc(ϵ, mps)
+    # NOTE THAT THE CALCULATION OF THE SPECTRAL POWER FLUX HERE DOES NOT DEPEND ON THE EMISSIVITY 
+    # I JUST USE DIRECTLY THE EQUATION 24 IN DERMER ET AL. 1997 PAPER    
     # D(Γ,θ) Doppler factor
     # Γ is the Bulk Lorentz Factor
     # Θ is the angle between the direction of the blob's motion and the direction to the observer
@@ -78,7 +76,7 @@ end
 
 
 """
-    comptonSpec(log_ν, flux_density, mps)
+    comptonSpec(log_ν, mps)
 
 Populate the compton spectrum `flux_density` with frequency bins given by `log_ν`` for parameters `mps``
 """
