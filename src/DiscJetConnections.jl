@@ -35,6 +35,8 @@ export MyParamStruct
     # Physical constants
     "Mass of electron in g"
     m_e = 9.1093897E-28
+    "Charge of electron in esu - electrostatic system units"
+    e = 4.8032068E-10
     "Speed of light in cm s^-1"
     c = 2.99792458E10
     "Planck's constant in ergs"
