@@ -6,17 +6,24 @@ using HCubature
 using Plots
 gr()   # default backend for Plots
 
+# synchrotron.jl
 export dn_e
 export j_syn
 export S_syn
 export P_syn
 export syncSpec
-export comptonSpec
 export syncPlot
 
+# Compton.jl
 export j_ssc
 export P_ssc
+export comptonSpec
 export ssc_Plot
+
+# Synchrotron_General.jl
+export j_nu
+export S_nu
+export Sync_Plot
 
 export MyParamStruct
 
@@ -34,6 +41,8 @@ export MyParamStruct
     h = 6.6260755E-27
     "Thomson cross section in cm^2"
     σ_T = 0.66524616E-24
+    "Permeability of free space in G cm-1/2 g-1/2 s2"
+    mu_o = 4.191696447656766E-10
     
     # Parameters specific to the physics of the problem
     "Magnetic field strength in Gauss"
@@ -100,5 +109,6 @@ end
 
 include("synchrotron.jl")
 include("Compton.jl")
+include("Synchrotron_General.jl")
 
 end # module
