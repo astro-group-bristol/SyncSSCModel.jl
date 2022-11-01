@@ -1,5 +1,7 @@
 using DiscJetConnections
 using Parameters
+using Statistics
+using LaTeXStrings
 using Plots
 gr()
 print("START")
@@ -204,7 +206,7 @@ print("\n ρ_ssc_syn = ", all_ρ_ssc_syn)
 #     n_e0_test = (3*mean_Pssc)/(2*σ_T_test*R_b_test*mean_Psyn*Σ_c_test(B_test,δ_test,mean_ϵ,z_test,γ_min_test,γ_max_test))
 #     return(n_e0_test)
 #     end
-# obj = ["sim1"] ### DON'T FORGET TO CHANGE THIS TO THE APPROPRIATE NAME E.G. mps"obj" = mps"sim1"  or  mps"obj" = mps"tav" ...
+# obj = ["tav_SSC"] ### DON'T FORGET TO CHANGE THIS TO THE APPROPRIATE NAME E.G. mps"obj" = mps"sim1"  or  mps"obj" = mps"tav" ...
 # for x in eachindex(obj)
 #     global β_test = sqrt(1.0 - 1.0/mps[x].Γ^2)
 #     global μ_obs_test = cos(mps[x].θ)
@@ -214,11 +216,14 @@ print("\n ρ_ssc_syn = ", all_ρ_ssc_syn)
 #     global γ_max_test = mps[x].γ_max
 #     global γ_min_test = mps[x].γ_min
 #     global z_test = mps[x].z
+#     global h_test = mps[x].h
+#     global c_test = mps[x].c
+#     global m_e_test = mps[x].m_e
 # end
 # log_ν_test = log_ν
 # ϵ_test = zeros(length(log_ν_test))
 # for x in eachindex(log_ν_test)
-#     ϵ_test[x]=(h*10^(log_ν_test[x]))/(m_e*c^2)
+#     ϵ_test[x]=(h_test*10^(log_ν_test[x]))/(m_e_test*c_test^2)
 # end
 # mean_ϵ = mean(ϵ_test)
 # syncFluxDensity_test = zeros(length(log_ν_test))
@@ -292,8 +297,8 @@ q0_PicA_wi = plot(log_ν, all_logFluxDensity, ylim=(-20,0), xlims=(7, 26), xmino
 # Plot Test Γ, p, ne0
 # p0_Γ = plot(log_ν, all_logνFluxDensity, ylim=(-20,0), xlims=(7, 26), xminorticks=5, yminorticks=5, xlabel="log ν (Hz)", ylabel="log νF(ν) (cgs)", title = "Spectral Power Flux", titlefontsize = 11, label = ["Γ=1" "Γ=5" "Γ=10"], framestyle=:box)#, linecolor = "blue2", line = :dash)
 # p0_p = plot(log_ν, all_logνFluxDensity, ylim=(-20,0), xlims=(7, 26), xminorticks=5, yminorticks=5, xlabel="log ν (Hz)", ylabel="log νF(ν) (cgs)", title = "Spectral Power Flux", titlefontsize = 11, label = ["p=2" "p=2.5" "p=3"], framestyle=:box)#, linecolor = "blue2", line = :dash)
-# p0_ne0_picA = plot(log_ν, all_logνFluxDensity, ylim=(-30,0), xlims=(7, 26), xminorticks=5, yminorticks=5, xlabel="log ν (Hz)", ylabel="log νF(ν) (cgs)", title = "Spectral Power Flux WH Pic A", titlefontsize = 11, label = ["n_e0=500" "n_e0=5.3" "n_e0=1E-5"], framestyle=:box)#, legend=:topright, size=(500,500), xtickfontsize=11, ytickfontsize=11, xguidefontsize=11, yguidefontsize=11, legendfontsize=11linecolor = "blue2", line = :dash)
-# p0_ne0_WK = plot(log_ν, all_logνFluxDensity, ylim=(-30,0), xlims=(7, 26), xminorticks=5, yminorticks=5, xlabel="log ν (Hz)", ylabel="log νF(ν) (cgs)", title = "Spectral Power Flux WK7.8 PKS0637-752", titlefontsize = 11, label = ["n_e0=500" "n_e0=19.0" "n_e0=1E-5"], framestyle=:box)#, legend=:topright, size=(500,500), xtickfontsize=11, ytickfontsize=11, xguidefontsize=11, yguidefontsize=11, legendfontsize=11linecolor = "blue2", line = :dash)
+p0_ne0_picA = plot(log_ν, all_logνFluxDensity, ylim=(-30,0), xlims=(7, 26), xminorticks=5, yminorticks=5, xlabel="log ν (Hz)", ylabel="log νF(ν) (cgs)", title = "Spectral Power Flux WH Pic A", titlefontsize = 11, label = ["n_e0=500" "n_e0=5.3" "n_e0=1E-5"], framestyle=:box)#, legend=:topright, size=(500,500), xtickfontsize=11, ytickfontsize=11, xguidefontsize=11, yguidefontsize=11, legendfontsize=11linecolor = "blue2", line = :dash)
+p0_ne0_WK = plot(log_ν, all_logνFluxDensity, ylim=(-30,0), xlims=(7, 26), xminorticks=5, yminorticks=5, xlabel="log ν (Hz)", ylabel="log νF(ν) (cgs)", title = "Spectral Power Flux WK7.8 PKS0637-752", titlefontsize = 11, label = ["n_e0=500" "n_e0=19.0" "n_e0=1E-5"], framestyle=:box)#, legend=:topright, size=(500,500), xtickfontsize=11, ytickfontsize=11, xguidefontsize=11, yguidefontsize=11, legendfontsize=11linecolor = "blue2", line = :dash)
 # p0_test = plot(log_ν, all_logνFluxDensity, ylim=(-30,0), xlims=(7, 26), xminorticks=5, yminorticks=5, xlabel="log ν (Hz)", ylabel="log νF(ν) (cgs)", title = "Spectral Power Flux", titlefontsize = 11, label = ["PKS0637-752 p=2.6" "Pictor A p=2.49" "Pictor A p=3.3"], framestyle=:box)#, linecolor = "blue2", line = :dash)
 ##########
 # PKS0637-752 OLD version
