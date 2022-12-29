@@ -1,7 +1,7 @@
 name = "DiscJetConnections"
 uuid = "9ec08b66-6ee8-447e-945d-4d196407106a"
 authors = ["GloriaRAH <gloria.raharimbolamena@bristol.ac.uk>"]
-version = "0.1.0"
+version = "0.2.0"
 
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
