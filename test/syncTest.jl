@@ -142,7 +142,8 @@ for x in eachindex(mps)
             # logFluxDensity[ix] = log10(syncFluxDensity[ix] + comptonFluxDensity[ix])
             # logνFluxDensity[ix] = log10(ϵ*(syncFluxDensity[ix] + comptonFluxDensity[ix]))
             all_logFluxDensity[ix,x] = log10(syncFluxDensity[ix] + comptonFluxDensity[ix])
-            all_logνFluxDensity[ix,x] = log10(ϵ*(syncFluxDensity[ix] + comptonFluxDensity[ix]))
+            all_logνFluxDensity[ix,x] = log10(ϵ*((syncFluxDensity[ix]) + (comptonFluxDensity[ix])))
+            # all_logνFluxDensity[ix,x] = log10(ϵ*((2.09*syncFluxDensity[ix]) + (0.37*comptonFluxDensity[ix])))
             if ix < ix_low
                 global ix_low = ix
             end
