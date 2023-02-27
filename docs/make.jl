@@ -1,10 +1,10 @@
 push!(LOAD_PATH,"src")
 
 using Documenter
-using DiscJetConnections
+using SyncSCCModel
 
 makedocs(
-    modules=[DiscJetConnections],
+    modules=[SyncSCCModel],
     clean=false,
     sitename="Documentation",
 
@@ -16,6 +16,6 @@ makedocs(
 # Update the following to have the correct user name
 # for your local version or the astro-group-bristol version
 deploydocs(
-# repo = "github.com/phajy/DiscJetConnections.jl.git"
-repo = "github.com/astro-group-bristol/DiscJetConnections.jl.git"
+# repo = "github.com/phajy/SyncSCCModel.jl.git"
+repo = "github.com/astro-group-bristol/SyncSCCModel.jl.git"
 )

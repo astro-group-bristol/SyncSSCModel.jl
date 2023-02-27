@@ -1,4 +1,4 @@
-using DiscJetConnections
+using SyncSCCModel
 using Parameters
 using Statistics
 using LaTeXStrings

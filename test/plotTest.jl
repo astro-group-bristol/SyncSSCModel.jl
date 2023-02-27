@@ -1,4 +1,4 @@
-using DiscJetConnections
+using SyncSCCModel
 using Parameters
 
 # Set up parameters, changing mass to 10^7 M_Sun

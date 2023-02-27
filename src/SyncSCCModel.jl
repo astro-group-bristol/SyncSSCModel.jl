@@ -1,4 +1,4 @@
-module DiscJetConnections
+module SyncSCCModel
 
 using Parameters
 using LaTeXStrings
