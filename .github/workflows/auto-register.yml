@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'Project.toml'
 
 permissions:
   contents: read
@@ -47,20 +49,20 @@ jobs:
       - name: Create new branch
         run: |
           cd ~/.julia/registries/AstroRegistry
-          git checkout -b "bot/discjetconnections"
+          git checkout -b "bot/SyncSCCModel"
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.SECRET_PR_TOKEN }}
           repository: "astro-group-bristol/AstroRegistry"
           directory: "/home/runner/.julia/registries/AstroRegistry"
-          branch: "bot/discjetconnections"
+          branch: "bot/SyncSCCModel"
       - name: Create pull request
         run: |
           cd ~/.julia/registries/AstroRegistry
           gh pr create -B main \
-            --title "New Version: DiscJetConnections" \
+            --title "New Version: SyncSCCModel" \
             --body "Automated pull request." \
-            -H "bot/discjetconnections"
+            -H "bot/SyncSCCModel"
         env:
             GITHUB_TOKEN: ${{ secrets.SECRET_PR_TOKEN }}
