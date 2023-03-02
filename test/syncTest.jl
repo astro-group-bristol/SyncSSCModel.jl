@@ -1,4 +1,4 @@
-using SyncSCCModel
+using SyncSSCModel
 using Parameters
 using Statistics
 using LaTeXStrings
