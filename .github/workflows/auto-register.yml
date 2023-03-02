@@ -49,20 +49,20 @@ jobs:
       - name: Create new branch
         run: |
           cd ~/.julia/registries/AstroRegistry
-          git checkout -b "bot/SyncSCCModel"
+          git checkout -b "bot/SyncSSCModel"
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.SECRET_PR_TOKEN }}
           repository: "astro-group-bristol/AstroRegistry"
           directory: "/home/runner/.julia/registries/AstroRegistry"
-          branch: "bot/SyncSCCModel"
+          branch: "bot/SyncSSCModel"
       - name: Create pull request
         run: |
           cd ~/.julia/registries/AstroRegistry
           gh pr create -B main \
-            --title "New Version: SyncSCCModel" \
+            --title "New Version: SyncSSCModel" \
             --body "Automated pull request." \
-            -H "bot/SyncSCCModel"
+            -H "bot/SyncSSCModel"
         env:
             GITHUB_TOKEN: ${{ secrets.SECRET_PR_TOKEN }}

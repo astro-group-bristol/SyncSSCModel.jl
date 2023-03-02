@@ -1,4 +1,4 @@
-module SyncSCCModel
+module SyncSSCModel
 
 using Parameters
 using LaTeXStrings
