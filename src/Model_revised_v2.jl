@@ -236,8 +236,8 @@ end
 # For Pictor A - Western Hotspot
 # For fitting, we may choose one of this model 
 # and comment the one not needed, change in the mps = [mpsWHPicA_1, mpsWHPicA_2] applies.
-mpsWHPicA_1 = MyParamStruct(B=3.3E-5, radius=7.7E20, Γ=1.0, γ_min=8.7E1, γ_max=1.0E6, p=2.48, dL=4.752E26, θ=23.0*pi/180.0, n_e0=5.3, z=0.035, Ho=70)
-mpsWHPicA_2 = MyParamStruct(B=5.3E-5, radius=7.7E20, Γ=1.0, γ_min=8.7E1, γ_max=4.75E5, p=2.48, dL=4.752E26, θ=23.0*pi/180.0, n_e0=2.2, z=0.035, Ho=70)
+mpsWHPicA_1 = MyParamModel(B=3.3E-5, radius=7.7E20, Γ=1.0, γ_min=8.7E1, γ_max=1.0E6, p=2.48, dL=4.752E26, θ=23.0*pi/180.0, n_e0=5.3, z=0.035)
+mpsWHPicA_2 = MyParamModel(B=5.3E-5, radius=7.7E20, Γ=1.0, γ_min=8.7E1, γ_max=4.75E5, p=2.48, dL=4.752E26, θ=23.0*pi/180.0, n_e0=2.2, z=0.035)
 mps = [mpsWHPicA_1, mpsWHPicA_2]
 
 ϵ = 1.0
