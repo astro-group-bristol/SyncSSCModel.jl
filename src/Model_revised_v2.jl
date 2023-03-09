@@ -186,46 +186,42 @@ using .Callmodel
 # need mean function
 # using StatsBase   # Commented this, not yet needed for this part of fitting
 
-function S3Cmodel(ϵ, mps)
-    all_logFluxDensity = zeros(100, length(mps))
-    all_logνFluxDensity = zeros(100, length(mps))
-    energy_ϵ = Any[]
-    # all_ρ_ssc_syn = zeros(length(mps))    # Commented this, not yet needed for this part of fitting
-    for x in eachindex(mps)
-        # none of these variables _should_ be global
-        log_ν = collect(range(mps[x].log_ν_low, stop=mps[x].log_ν_high, length=mps[x].ν_n))
-        # Get synchrotron
-        syncFluxDensity = Callmodel.syncSpec(log_ν, mps[x])
-        # Get self-Compton
-        comptonFluxDensity = Callmodel.comptonSpec(log_ν, mps[x])
-        # Plot spectrum
-        ix_low = mps[x].ν_n
-        ix_high = 1
-        for ix in range(1, mps[x].ν_n)
-            if (syncFluxDensity[ix] > 0.0 || comptonFluxDensity[ix] > 0.0)
-                ϵ = mps[x].h*10.0^log_ν[ix]/(mps[x].m_e*mps[x].c^2)
-                append!(energy_ϵ, ϵ)    # Just to check at the end the energy values
-                all_logFluxDensity[ix,x] = log10(syncFluxDensity[ix] + comptonFluxDensity[ix])
-                all_logνFluxDensity[ix,x] = log10(ϵ*((syncFluxDensity[ix]) + (comptonFluxDensity[ix])))
-                if ix < ix_low
-                    ix_low = ix
-                end
-                if ix > ix_high
-                    ix_high = ix
-                end
-            else
-                all_logFluxDensity[ix,x] = -50.0
-                all_logνFluxDensity[ix,x] = -50.0
+function S3Cmodel(mps::MyParamModel)
+    # none of these variables _should_ be global
+    log_ν = collect(range(mps.log_ν_low, stop=mps.log_ν_high, length=mps.ν_n))
+    energy_ϵ = zeros(Float64, mps.ν_n)
+    all_logFluxDensity = zeros(Float64, 100)
+    all_logνFluxDensity = zeros(Float64, 100)
+    # Get synchrotron
+    syncFluxDensity = Callmodel.syncSpec(log_ν, mps)
+    # Get self-Compton
+    comptonFluxDensity = Callmodel.comptonSpec(log_ν, mps)
+    # Plot spectrum
+    ix_low = mps.ν_n
+    ix_high = 1
+    for ix in range(1, mps.ν_n)
+        if (syncFluxDensity[ix] > 0.0 || comptonFluxDensity[ix] > 0.0)
+            ϵ = mps.h*10.0^log_ν[ix]/(mps.m_e*mps.c^2)
+            energy_ϵ[ix] = ϵ
+            all_logFluxDensity[ix] = log10(syncFluxDensity[ix] + comptonFluxDensity[ix])
+            all_logνFluxDensity[ix] = log10(ϵ*((syncFluxDensity[ix]) + (comptonFluxDensity[ix])))
+            if ix < ix_low
+                ix_low = ix
             end
+            if ix > ix_high
+                ix_high = ix
+            end
+        else
+            all_logFluxDensity[ix] = -50.0
+            all_logνFluxDensity[ix] = -50.0
         end
-        # all_ρ_ssc_syn[x] = mean(comptonFluxDensity) / mean(syncFluxDensity)    # Commented this, not yet needed for this part of fitting
-    end    
-    # return everything
-    (all_logFluxDensity, all_logνFluxDensity) # all_ρ_ssc_syn)   # Commented this, not yet needed for this part of fitting
-    print("Energy ϵ = ", energy_ϵ)
-    print("\n Flux density Fν = ", all_logFluxDensity)
-    print("\n Spectral Power Flux νFν = ", all_logνFluxDensity)
-    plot(log_ν, all_logνFluxDensity, ylim=(-20,-10), xlims=(7, 26))   # To test the code
+    end
+    # all_ρ_ssc_syn[x] = mean(comptonFluxDensity) / mean(syncFluxDensity)    # Commented this, not yet needed for this part of fitting
+    (; log_ν = log_ν, energy_ϵ = energy_ϵ, all_logFluxDensity = all_logFluxDensity, all_logνFluxDensity = all_logνFluxDensity) 
+end
+
+function S3Cmodel(mps::Vector{<:MyParamModel})
+    map(S3Cmodel, mps)
 end
 
 # Testing the model
@@ -240,5 +236,14 @@ mpsWHPicA_1 = MyParamModel(B=3.3E-5, radius=7.7E20, Γ=1.0, γ_min=8.7E1, γ_max
 mpsWHPicA_2 = MyParamModel(B=5.3E-5, radius=7.7E20, Γ=1.0, γ_min=8.7E1, γ_max=4.75E5, p=2.48, dL=4.752E26, θ=23.0*pi/180.0, n_e0=2.2, z=0.035)
 mps = [mpsWHPicA_1, mpsWHPicA_2]
 
-ϵ = 1.0
-S3Cmodel(ϵ, mps)
+outs = S3Cmodel(mps)
+
+# print("Energy ϵ = ", energy_ϵ)
+# print("\n Flux density Fν = ", all_logFluxDensity)
+# print("\n Spectral Power Flux νFν = ", all_logνFluxDensity)
+
+p = plot(;  ylim=(-20,-10), xlims=(7, 26))
+for result in outs
+    plot!(p, result.log_ν, result.all_logνFluxDensity)
+end
+display(p)
