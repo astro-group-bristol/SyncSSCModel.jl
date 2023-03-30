@@ -1,0 +1,15 @@
+# Frequency log10(nu)	# Spectral Flux Density log10(nu*F_nu)
+# WK7.8 PKS 0637-752 (Quasar)
+# 9.93	-14.42
+# 13.71	-14.62
+# 13.92	-14.56
+# 14.27	-14.74
+# 14.63	-15.06
+# 14.80	-15.12
+# 17.38	-13.82
+
+# Western Hotspot of Pictor A (FRII radio galaxy)
+9.7	-12.96
+13.10	-11.98
+13.92	-11.9
+17.7	-12.35
