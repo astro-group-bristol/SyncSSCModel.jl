@@ -257,8 +257,8 @@ dataset = SimpleDataset(
     10 .^ data[1, :],
     10 .^ data[2, :],
     x_units = SpectralFitting.SpectralUnits.u"Hz",
-    x_err = 0.1 .* (10 .^ data[2, :]),
-    y_err = 0.05 .* (10 .^ data[1, :]),
+    x_err = 0.05 .* (10 .^ data[1, :]),
+    y_err = 0.1 .* (10 .^ data[2, :]),
 )
 
 # Overplot dataset as large points, colored red, without lines
