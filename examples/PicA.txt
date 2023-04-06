@@ -1,0 +1,6 @@
+# Frequency log10(nu)	# Spectral Flux Density log10(nu*F_nu)
+# Western Hotspot of Pictor A (FRII radio galaxy)
+9.7	-12.96
+13.10	-11.98
+13.92	-11.9
+17.7	-12.35
