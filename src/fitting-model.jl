@@ -233,7 +233,7 @@ model = SSCModel()
 flux = invokemodel(νrange, model)
 
 begin
-    p = plot(νrange[1:end-1], flux[1:end-1], xscale=:log10, yscale=:log10, xlabel="ν (Hz)", ylabel="Flux (units)")
+    p = plot(νrange[1:end-1], flux[1:end-1], xscale=:log10, yscale=:log10, xlabel="ν (Hz)", ylabel="Flux (units)", label = "Model", legend = :topleft)
     display(p)
 end
 
@@ -257,12 +257,12 @@ dataset = SimpleDataset(
     10 .^ data[1, :],
     10 .^ data[2, :],
     x_units = SpectralFitting.SpectralUnits.u"Hz",
-    yerr = 0.05 .* (10 .^ data[1, :]),
-    xerr = 0.1 .* (10 .^ data[2, :]),
+    x_err = 0.05 .* (10 .^ data[1, :]),
+    y_err = 0.1 .* (10 .^ data[2, :]),
 )
 
 # Overplot dataset as large points, colored red, without lines
-plot!(dataset.x, dataset.y, seriestype = :scatter, markersize = 3, markerstrokewidth = 0, mc=:red)
+plot!(dataset.x, dataset.y, seriestype = :scatter, markersize = 3, markerstrokewidth = 0, mc=:red, label = "Data")
 
 # create an instance of the model
 # model = SSCModel()
@@ -284,8 +284,8 @@ res = fit(prob, LevenbergMarquadt(), autodiff = :finite)
 # print the result prettily
 display(res)
 
-plot(dataset, xscale = :identity, yscale = :identity, mc=:red, xrange=(1e7, 1e26), yrange=(1e-15, 1e-10))
+plot(dataset.x, dataset.y, seriestype = :scatter, xscale = :log10, yscale = :log10, mc=:red, xrange=(1e7, 1e26), yrange=(1e-14, 1e-11), legend = :topleft, label = "Data")
 # plot!(res, lc=:blue)
 
 f = invokemodel(νrange, model, res.u)
-plot!(νrange, f, lc=:blue)
+plot!(νrange, f, lc=:blue, label = "Best fit model")
