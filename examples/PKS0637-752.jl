@@ -3,27 +3,29 @@
 using SyncSSCModel
 using SpectralFitting
 using Plots
+using Revise
 
 # define the model we want to fit
 # includes default parameter values
 # specifies which paramters are free
 function PKSSSCModel(;
-    K = FitParam(1.0),
-    B = FitParam(1.25E-6),
-    n_e0 = FitParam(19.0),
-    radius = FitParam(1.0E22),
+    K = FitParam(1.0, lower_limit = 0.5, upper_limit = 2.0),
+    B = FitParam(1.25E-5, lower_limit = 0.0, upper_limit = 1.0E-3),
+    n_e0 = FitParam(19.0, lower_limit = 0.0, upper_limit = 1.0E2),
+    radius = FitParam(1.0E22, lower_limit = 1.0E21, upper_limit = 1.0E23),
     Γ = FitParam(2.0),
     γ_min = FitParam(2.5E3),
     γ_max = FitParam(4.0E6),
-    p = FitParam(2.6),
-    dL = FitParam(1.26E28),
+    p = FitParam(2.6, lower_limit = 2.0, upper_limit = 3.5),
+    dL = FitParam(1.26E28, lower_limit = 1.0E27, upper_limit = 1.0E29),
     θ = FitParam(60.0 * pi / 180.0),
     z = FitParam(0.651),
 )
     SSCModel{
         typeof(K),
         # SpectralFitting.FreeParameters{(:K, :B, :p, :radius, :θ, :dL, :z, :n_e0)},
-        SpectralFitting.FreeParameters{(:K, :B, :p, :θ, :n_e0,)},
+        # SpectralFitting.FreeParameters{(:K, :B, :p, :θ, :n_e0,)},
+        SpectralFitting.FreeParameters{(:B, :n_e0)},
     }(
         K,
         B,
@@ -96,14 +98,19 @@ plot!(dataset.x, dataset.y, seriestype = :scatter, markersize = 3, markerstrokew
 # end
 
 prob = FittingProblem(model, dataset)
+
+# LevenbergMarquadt version of fitting
 res = fit(prob, LevenbergMarquadt()) # , autodiff = :finite)
+
+# NelderMead version of fitting
 # using OptimizationOptimJL
 # res = fit(prob, ChiSquared(), NelderMead())
-# print the result prettily
-display(res)
 
 plot(dataset.x, dataset.y, seriestype = :scatter, xscale = :log10, yscale = :log10, mc=:red, xrange=(1e7, 1e26), yrange=(1e-17, 5e-13), legend = :topleft, label = "Data")
 # plot!(res, lc=:blue)
 
 f = invokemodel(νrange, model, res.u)
 plot!(νrange, f, lc=:blue, label = "Best fit model")
+
+# print the result prettily
+display(res)
