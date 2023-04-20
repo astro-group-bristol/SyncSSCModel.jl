@@ -8,10 +8,10 @@ using Plots
 # includes default parameter values
 # specifies which paramters are free
 function PicASSCModel(;
-    K = FitParam(1.0),
-    B = FitParam(3.3E-5),
-    n_e0 = FitParam(5.3),
-    radius = FitParam(7.7E20),
+    K = FitParam(1.0, lower_limit = 0.5, upper_limit = 2.0),
+    B = FitParam(3.3E-5, lower_limit = 0.0, upper_limit = 1.0E-2),
+    n_e0 = FitParam(5.3, lower_limit = 0.0, upper_limit = 1.0E2),
+    radius = FitParam(7.7E20, lower_limit = 1.0E20, upper_limit = 1.0E22),
     Γ = FitParam(1.0),
     γ_min = FitParam(8.7E1),
     γ_max = FitParam(1.0E6),
@@ -23,7 +23,8 @@ function PicASSCModel(;
     SSCModel{
         typeof(K),
         # SpectralFitting.FreeParameters{(:K, :B, :p, :radius, :θ, :dL, :z, :n_e0)},
-        SpectralFitting.FreeParameters{(:K, :B, :p, :θ, :n_e0,)},
+        # SpectralFitting.FreeParameters{(:K, :B, :p, :θ, :n_e0,)},
+        SpectralFitting.FreeParameters{(:K, :B, :p, :n_e0,)},
     }(
         K,
         B,
@@ -96,11 +97,12 @@ prob = FittingProblem(model, dataset)
 res = fit(prob, LevenbergMarquadt(), autodiff = :finite)
 # using OptimizationOptimJL
 # res = fit(prob, ChiSquared(), NelderMead())
-# print the result prettily
-display(res)
 
 plot(dataset.x, dataset.y, seriestype = :scatter, xscale = :log10, yscale = :log10, mc=:red, xrange=(1e7, 1e26), yrange=(1e-14, 1e-11), legend = :topleft, label = "Data")
 # plot!(res, lc=:blue)
 
 f = invokemodel(νrange, model, res.u)
 plot!(νrange, f, lc=:blue, label = "Best fit model")
+
+# print the result prettily
+display(res)
