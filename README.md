@@ -21,6 +21,6 @@ julia>] instantiate
 ```
 
 ## Simple fit example
-Find the example scripts in `examples`. Two files are required for each source. 
-* The first file contains the Julia script to do the fitting (e.g. `PicA.jl`). You can enter parameter values according to the source and define which parameters to freeze and which to fit.
-* The second file is a `.txt` file (e.g. `PicA.txt`) where you put all your observation data sets in a logarithmic scale. The first column is for the frequency ``log_{10} \\nu`` in Hz, and the second column is for the spectral power flux ``log_{10} \\nu F_{\\nu}`` in cgs units ``erg cm^{-2} s^{-1}``.
+Find the example scripts in [examples](examples). Two files are required for each source.
+- The first file contains the Julia script to do the fitting (e.g. [PicA.jl](examples/PicA.jl)). You can enter parameter values according to the source and define which parameters to freeze and which to fit.
+- The second file is a `.txt` file (e.g. [PicA.txt](examples/PicA.txt)) where you put all your observation data sets in a logarithmic scale. The first column is for the frequency $\log_{10} \nu$ in Hz, and the second column is for the spectral power flux $\log_{10} \nu F_{\nu}$ in cgs units $\text{erg cm}^{-2} \text{s}^{-1}$.
