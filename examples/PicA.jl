@@ -12,12 +12,12 @@ function PicASSCModel(;
     K = FitParam(1.0, lower_limit = 0.5, upper_limit = 2.0),
     B = FitParam(3.3E-5, lower_limit = 0.0, upper_limit = 1.0E-2),
     n_e0 = FitParam(5.3, lower_limit = 0.0, upper_limit = 1.0E2),
-    radius = FitParam(7.7E20, lower_limit = 1.0E20, upper_limit = 1.0E22),
+    log_radius = FitParam(log10(7.7E20), lower_limit = 20.0, upper_limit = 22.0),
     Γ = FitParam(1.0),
     γ_min = FitParam(8.7E1),
     γ_max = FitParam(1.0E6),
     p = FitParam(2.48),
-    dL = FitParam(4.752E26),
+    log_dL = FitParam(log10(4.752E26), lower_limit = 26.0, upper_limit = 28.0),
     θ = FitParam(23.0 * pi / 180.0),
     z = FitParam(0.035),
 )
@@ -25,7 +25,7 @@ function PicASSCModel(;
         typeof(K),
         # SpectralFitting.FreeParameters{(:K, :B, :p, :radius, :θ, :dL, :z, :n_e0)},
         # SpectralFitting.FreeParameters{(:K, :B, :p, :θ, :n_e0,)},
-        SpectralFitting.FreeParameters{(:K, :B, :p, :n_e0,)},
+        SpectralFitting.FreeParameters{(:B, :p, :n_e0, :log_radius, :log_dL)},
     }(
         K,
         B,
@@ -34,9 +34,9 @@ function PicASSCModel(;
         γ_min,
         γ_max,
         Γ,
-        radius,
+        log_radius,
         θ,
-        dL,
+        log_dL,
         z,
     )
 end

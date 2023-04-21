@@ -12,12 +12,12 @@ function PKSSSCModel(;
     K = FitParam(1.0, lower_limit = 0.5, upper_limit = 2.0),
     B = FitParam(1.25E-5, lower_limit = 0.0, upper_limit = 1.0E-3),
     n_e0 = FitParam(19.0, lower_limit = 0.0, upper_limit = 1.0E2),
-    radius = FitParam(1.0E22, lower_limit = 1.0E21, upper_limit = 1.0E23),
+    log_radius = FitParam(log10(1.0E22), lower_limit = 21.0, upper_limit = 23.0),
     Γ = FitParam(2.0),
     γ_min = FitParam(2.5E3),
     γ_max = FitParam(4.0E6),
     p = FitParam(2.6, lower_limit = 2.0, upper_limit = 3.5),
-    dL = FitParam(1.26E28, lower_limit = 1.0E27, upper_limit = 1.0E29),
+    log_dL = FitParam(log10(1.26E28), lower_limit=23.0, upper_limit=29.0),
     θ = FitParam(60.0 * pi / 180.0),
     z = FitParam(0.651),
 )
@@ -25,7 +25,7 @@ function PKSSSCModel(;
         typeof(K),
         # SpectralFitting.FreeParameters{(:K, :B, :p, :radius, :θ, :dL, :z, :n_e0)},
         # SpectralFitting.FreeParameters{(:K, :B, :p, :θ, :n_e0,)},
-        SpectralFitting.FreeParameters{(:B, :n_e0)},
+        SpectralFitting.FreeParameters{(:B, :n_e0, :log_dL)},
     }(
         K,
         B,
@@ -34,9 +34,9 @@ function PKSSSCModel(;
         γ_min,
         γ_max,
         Γ,
-        radius,
+        log_radius,
         θ,
-        dL,
+        log_dL,
         z,
     )
 end

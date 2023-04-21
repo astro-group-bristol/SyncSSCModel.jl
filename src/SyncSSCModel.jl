@@ -60,7 +60,7 @@ end
 Volume Sphere
 """
 function Vb(mps)
-    return((4.0/3.0) * pi * mps.radius^3)
+    return((4.0/3.0) * pi * (10.0^mps.log_radius)^3)
 end
 
 # Major functions
@@ -85,7 +85,7 @@ end
 Synchrotron Flux density
 """
 function S_syn(ϵ, mps)
-    return((δ(mps)^3 * (1.0+mps.z) * Vb(mps) * j_syn(ϵ*(1.0+mps.z)/δ(mps), mps)) / mps.dL^2)
+    return((δ(mps)^3 * (1.0+mps.z) * Vb(mps) * j_syn(ϵ*(1.0+mps.z)/δ(mps), mps)) / (10.0^mps.log_dL)^2)
 end
 """
 Synchrotron Spectral Power Flux
@@ -105,7 +105,7 @@ Synchrotron Self-Compton emissivity
 function j_ssc(ϵ, mps)
     Σ_c = min(ϵ^-1, ϵ/mps.γ_min^2, ϵ_B(mps)*mps.γ_max^2) / max(ϵ_B(mps)*mps.γ_min^2, ϵ/mps.γ_max^2)
     if Σ_c > 1.0
-        return(((c_cgs_f * σ_e_cgs_f^2 * mps.n_e0^2 * u_B(mps) * mps.radius) / (9.0 * pi * ϵ_B(mps))) * (ϵ/ϵ_B(mps))^-α(mps) * log(Σ_c))
+        return(((c_cgs_f * σ_e_cgs_f^2 * mps.n_e0^2 * u_B(mps) * (10.0^mps.log_radius)) / (9.0 * pi * ϵ_B(mps))) * (ϵ/ϵ_B(mps))^-α(mps) * log(Σ_c))
     else
         return(0.0)
     end
@@ -117,7 +117,7 @@ function P_ssc(ϵ, mps)
 
     Σ_c = min(δ(mps)/(ϵ*(1.0+mps.z)), mps.γ_max^2 * ϵ_B(mps), ϵ*(1.0+mps.z)/(δ(mps)*mps.γ_min^2)) / max(mps.γ_min^2 * ϵ_B(mps), ϵ*(1+mps.z)/(δ(mps)*mps.γ_max^2))
     if Σ_c > 1.0
-        return(((δ(mps))^(3.0+α(mps)) * (c_cgs_f*σ_e_cgs_f^2*mps.n_e0^2*u_B(mps)*mps.radius*Vb(mps)) * (1.0+mps.z)^(1.0-α(mps)) * (ϵ/ϵ_B(mps))^(1.0-α(mps)) * log(Σ_c)) / (9.0*pi*mps.dL^2))
+        return(((δ(mps))^(3.0+α(mps)) * (c_cgs_f*σ_e_cgs_f^2*mps.n_e0^2*u_B(mps)*(10.0^mps.log_radius)*Vb(mps)) * (1.0+mps.z)^(1.0-α(mps)) * (ϵ/ϵ_B(mps))^(1.0-α(mps)) * log(Σ_c)) / (9.0*pi*(10.0^mps.log_dL)^2))
     else
         return(0.0)
     end
@@ -177,12 +177,12 @@ end
     γ_max::T
     "Bulk Lorentz Factor"
     Γ::T
-    "Radius of emitting Region"
-    radius::T
+    "log_10(Radius of emitting Region)"
+    log_radius::T
     "Angle (radians) between the direction of the blob's motion and the direction to the observer"
     θ::T
-    "Luminosity distance"
-    dL::T
+    "log_10(Luminosity distance)"
+    log_dL::T
     "Redshift"
     z::T
 end
