@@ -23,14 +23,14 @@ const σ_e_cgs_f = qconvert(Float64, uconvert(u"cm^2", σ_e))
 Cyclotron energy in units of m_e*c^2
 """
 function ϵ_B(mps)
-    return(mps.B/4.414E13)
+    return(10.0^mps.log_B/4.414E13)
 end
 
 """
 Magnetic field energy density
 """
 function u_B(mps)
-    return((mps.B)^2/(8.0*pi))
+    return((10.0^mps.log_B)^2/(8.0*pi))
 end
 
 """
@@ -165,8 +165,8 @@ end
     # need this field for additive models
     "Normalisation."
     K::T
-    "Magnetic field strength in Gauss"
-    B::T
+    "log_10(Magnetic field strength in Gauss)"
+    log_B::T
     "Normalisation of electron density in cm^-3"
     n_e0::T
     "Power law index"
