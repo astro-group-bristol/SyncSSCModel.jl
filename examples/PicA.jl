@@ -3,14 +3,13 @@
 using SyncSSCModel
 using SpectralFitting
 using Plots
-using Revise
 
 # define the model we want to fit
 # includes default parameter values
 # specifies which paramters are free
 function PicASSCModel(;
     K = FitParam(1.0, lower_limit = 0.5, upper_limit = 2.0),
-    B = FitParam(3.3E-5, lower_limit = 0.0, upper_limit = 1.0E-2),
+    log_B = FitParam(log10(3.3E-5), lower_limit = -6.0, upper_limit = -2.0),
     n_e0 = FitParam(5.3, lower_limit = 0.0, upper_limit = 1.0E2),
     log_radius = FitParam(log10(7.7E20), lower_limit = 20.0, upper_limit = 22.0),
     Γ = FitParam(1.0),
@@ -24,11 +23,11 @@ function PicASSCModel(;
     SSCModel{
         typeof(K),
         # SpectralFitting.FreeParameters{(:K, :B, :p, :radius, :θ, :dL, :z, :n_e0)},
-        # SpectralFitting.FreeParameters{(:K, :B, :p, :θ, :n_e0,)},
-        SpectralFitting.FreeParameters{(:B, :p, :n_e0, :log_radius, :log_dL)},
+        # SpectralFitting.FreeParameters{(:K, :log_B, :p, :θ, :n_e0,)},
+        SpectralFitting.FreeParameters{(:log_B, :n_e0,)},
     }(
         K,
-        B,
+        log_B,
         n_e0,
         p,
         γ_min,
@@ -46,6 +45,9 @@ end
 model = PicASSCModel()
 flux = invokemodel(νrange, model)
 # flux = invokemodel!(flux, νrange, model)
+
+# find inices where flux is non zero
+# nonzero = findall(x -> x > 0.0, flux)
 
 begin
     p = plot(νrange[1:end-1], flux[1:end-1], xscale=:log10, yscale=:log10, xlabel="ν (Hz)", ylabel="Flux (units)", label = "Model", legend = :topleft)
