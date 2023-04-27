@@ -3,6 +3,7 @@
 using SyncSSCModel
 using SpectralFitting
 using Plots
+using Revise
 
 # define the model we want to fit
 # includes default parameter values
