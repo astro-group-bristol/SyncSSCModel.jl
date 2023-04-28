@@ -9,15 +9,15 @@ using Plots
 # specifies which paramters are free
 function PKSSSCModel(;
     K = FitParam(1.0, lower_limit = 0.5, upper_limit = 2.0),
-    log_B = FitParam(log10(1.25E-5), lower_limit = -6.0, upper_limit = -3.0),
+    log_B = FitParam(log10(1.25E-5), lower_limit = -8.0, upper_limit = -3.0),
     n_e0 = FitParam(19.0, lower_limit = 0.0, upper_limit = 1.0E2),
     log_radius = FitParam(log10(1.0E22), lower_limit = 21.0, upper_limit = 23.0),
     Γ = FitParam(2.0),
     log_γ_min = FitParam(log10(2.5E3), lower_limit = 1.0),
     log_γ_max = FitParam(log10(4.0E6), upper_limit = 8.0),
     p = FitParam(2.6, lower_limit = 2.0, upper_limit = 3.5),
-    log_dL = FitParam(log10(1.26E28), lower_limit=23.0, upper_limit=29.0),
-    θ = FitParam(60.0 * pi / 180.0),
+    log_dL = FitParam(log10(1.26E28), lower_limit = 23.0, upper_limit = 29.0),
+    θ = FitParam(60.0 * pi / 180.0, lower_limit = 30*pi/180, upper_limit = 80*pi/180),
     z = FitParam(0.651),
 )
     SSCModel{
