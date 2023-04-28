@@ -68,7 +68,7 @@ end
 Electron density distribution
 """
 function dn_e(ϵ, mps)
-    if (γ(ϵ, mps) < mps.γ_min) || (γ(ϵ, mps) > mps.γ_max)
+    if (γ(ϵ, mps) < (10.0^mps.log_γ_min)) || (γ(ϵ, mps) > (10.0^mps.log_γ_max))
         dn_e = 0.0
     else
         dn_e = mps.n_e0 * γ(ϵ, mps)^-mps.p
@@ -103,7 +103,7 @@ end
 Synchrotron Self-Compton emissivity
 """
 function j_ssc(ϵ, mps)
-    Σ_c = min(ϵ^-1, ϵ/mps.γ_min^2, ϵ_B(mps)*mps.γ_max^2) / max(ϵ_B(mps)*mps.γ_min^2, ϵ/mps.γ_max^2)
+    Σ_c = min(ϵ^-1, ϵ/(10.0^mps.log_γ_min)^2, ϵ_B(mps)*(10.0^mps.log_γ_max)^2) / max(ϵ_B(mps)*(10.0^mps.log_γ_min)^2, ϵ/(10.0^mps.log_γ_max)^2)
     if Σ_c > 1.0
         return(((c_cgs_f * σ_e_cgs_f^2 * mps.n_e0^2 * u_B(mps) * (10.0^mps.log_radius)) / (9.0 * pi * ϵ_B(mps))) * (ϵ/ϵ_B(mps))^-α(mps) * log(Σ_c))
     else
@@ -115,7 +115,7 @@ Synchrotron Self-Compton Flux density
 """
 function P_ssc(ϵ, mps)
 
-    Σ_c = min(δ(mps)/(ϵ*(1.0+mps.z)), mps.γ_max^2 * ϵ_B(mps), ϵ*(1.0+mps.z)/(δ(mps)*mps.γ_min^2)) / max(mps.γ_min^2 * ϵ_B(mps), ϵ*(1+mps.z)/(δ(mps)*mps.γ_max^2))
+    Σ_c = min(δ(mps)/(ϵ*(1.0+mps.z)), (10.0^mps.log_γ_max)^2 * ϵ_B(mps), ϵ*(1.0+mps.z)/(δ(mps)*(10.0^mps.log_γ_min)^2)) / max((10.0^mps.log_γ_min)^2 * ϵ_B(mps), ϵ*(1+mps.z)/(δ(mps)*(10.0^mps.log_γ_max)^2))
     if Σ_c > 1.0
         return(((δ(mps))^(3.0+α(mps)) * (c_cgs_f*σ_e_cgs_f^2*mps.n_e0^2*u_B(mps)*(10.0^mps.log_radius)*Vb(mps)) * (1.0+mps.z)^(1.0-α(mps)) * (ϵ/ϵ_B(mps))^(1.0-α(mps)) * log(Σ_c)) / (9.0*pi*(10.0^mps.log_dL)^2))
     else
@@ -171,10 +171,10 @@ end
     n_e0::T
     "Power law index"
     p::T
-    "Minimum Lorentz Factor"
-    γ_min::T
-    "Maximum Lorentz Factor"
-    γ_max::T
+    "log_10(Minimum Lorentz Factor)"
+    log_γ_min::T
+    "log_10(Maximum Lorentz Factor)"
+    log_γ_max::T
     "Bulk Lorentz Factor"
     Γ::T
     "log_10(Radius of emitting Region)"

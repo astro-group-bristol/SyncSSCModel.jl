@@ -3,7 +3,6 @@
 using SyncSSCModel
 using SpectralFitting
 using Plots
-using Revise
 
 # define the model we want to fit
 # includes default parameter values
@@ -14,8 +13,8 @@ function PicASSCModel(;
     n_e0 = FitParam(5.3, lower_limit = 0.0, upper_limit = 1.0E2),
     log_radius = FitParam(log10(7.7E20), lower_limit = 20.0, upper_limit = 22.0),
     Γ = FitParam(1.0),
-    γ_min = FitParam(8.7E1),
-    γ_max = FitParam(1.0E6),
+    log_γ_min = FitParam(log10(8.7E1), lower_limit = 0.0, upper_limit = 3.0),
+    log_γ_max = FitParam(log10(1.0E6), lower_limit = 5.0, upper_limit = 8.0),
     p = FitParam(2.48),
     log_dL = FitParam(log10(4.752E26), lower_limit = 26.0, upper_limit = 28.0),
     θ = FitParam(23.0 * pi / 180.0),
@@ -23,36 +22,10 @@ function PicASSCModel(;
 )
     SSCModel{
         typeof(K),
-        # SpectralFitting.FreeParameters{(:K, :B, :p, :radius, :θ, :dL, :z, :n_e0)},
-        # SpectralFitting.FreeParameters{(:K, :log_B, :p, :θ, :n_e0,)},
         SpectralFitting.FreeParameters{(:log_B, :n_e0,)},
     }(
-        K,
-        log_B,
-        n_e0,
-        p,
-        γ_min,
-        γ_max,
-        Γ,
-        log_radius,
-        θ,
-        log_dL,
-        z,
+        K, log_B, n_e0, p, log_γ_min, log_γ_max, Γ, log_radius, θ, log_dL, z,
     )
-end
-
-νrange =  10 .^ collect(range(7, 26, 100))
-
-model = PicASSCModel()
-flux = invokemodel(νrange, model)
-# flux = invokemodel!(flux, νrange, model)
-
-# find inices where flux is non zero
-# nonzero = findall(x -> x > 0.0, flux)
-
-begin
-    p = plot(νrange[1:end-1], flux[1:end-1], xscale=:log10, yscale=:log10, xlabel="ν (Hz)", ylabel="Flux (units)", label = "Model", legend = :topleft)
-    display(p)
 end
 
 # read in the data values
@@ -79,34 +52,24 @@ dataset = SimpleDataset(
     y_err = 0.1 .* (10 .^ data[2, :]),
 )
 
-# Overplot dataset as large points, colored red, without lines
-plot!(dataset.x, dataset.y, seriestype = :scatter, markersize = 3, markerstrokewidth = 0, mc=:red, label = "Data")
-
-# create an instance of the model
-# model = SSCModel()
-
-# νrange =  10 .^ collect(range(7, 26, 100))
-# f = invokemodel(νrange, model)
-
-# plot(νrange, f)
-
-# begin
-    # base case
-    # plot!(dataset.x, dataset.y)
-    # plot!(νrange, f)
-    # display(p)
-# end
-
+# define the fitting problem
+model = PicASSCModel()
 prob = FittingProblem(model, dataset)
+
+# fit using Levenberg Marquadt
 res = fit(prob, LevenbergMarquadt(), autodiff = :finite)
+
+# fit using Nelder Mead
 # using OptimizationOptimJL
 # res = fit(prob, ChiSquared(), NelderMead())
 
+# plot the data and the best fit model
 plot(dataset.x, dataset.y, seriestype = :scatter, xscale = :log10, yscale = :log10, mc=:red, xrange=(1e7, 1e26), yrange=(1e-14, 1e-11), legend = :topleft, label = "Data")
-# plot!(res, lc=:blue)
 
+νrange =  10 .^ collect(range(7, 26, 100))
 f = invokemodel(νrange, model, res.u)
-plot!(νrange, f, lc=:blue, label = "Best fit model")
+nonzero = findall(x -> x > 0.0, f)
+plot!(νrange[nonzero], f[nonzero], lc=:blue, label = "Best fit model")
 
 # print the result prettily
 display(res)
