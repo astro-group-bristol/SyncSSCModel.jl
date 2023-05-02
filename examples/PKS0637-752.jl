@@ -3,56 +3,29 @@
 using SyncSSCModel
 using SpectralFitting
 using Plots
-using Revise
 
 # define the model we want to fit
 # includes default parameter values
 # specifies which paramters are free
 function PKSSSCModel(;
     K = FitParam(1.0, lower_limit = 0.5, upper_limit = 2.0),
-    B = FitParam(1.25E-5, lower_limit = 0.0, upper_limit = 1.0E-3),
+    log_B = FitParam(log10(1.25E-5), lower_limit = -8.0, upper_limit = -3.0),
     n_e0 = FitParam(19.0, lower_limit = 0.0, upper_limit = 1.0E2),
     log_radius = FitParam(log10(1.0E22), lower_limit = 21.0, upper_limit = 23.0),
     Γ = FitParam(2.0),
-    γ_min = FitParam(2.5E3),
-    γ_max = FitParam(4.0E6),
+    log_γ_min = FitParam(log10(2.5E3), lower_limit = 1.0),
+    log_γ_max = FitParam(log10(4.0E6), upper_limit = 8.0),
     p = FitParam(2.6, lower_limit = 2.0, upper_limit = 3.5),
-    log_dL = FitParam(log10(1.26E28), lower_limit=23.0, upper_limit=29.0),
-    θ = FitParam(60.0 * pi / 180.0),
+    log_dL = FitParam(log10(1.26E28), lower_limit = 23.0, upper_limit = 29.0),
+    θ = FitParam(60.0 * pi / 180.0, lower_limit = 30*pi/180, upper_limit = 80*pi/180),
     z = FitParam(0.651),
 )
     SSCModel{
         typeof(K),
-        # SpectralFitting.FreeParameters{(:K, :B, :p, :radius, :θ, :dL, :z, :n_e0)},
-        # SpectralFitting.FreeParameters{(:K, :B, :p, :θ, :n_e0,)},
-        SpectralFitting.FreeParameters{(:B, :n_e0, :log_dL)},
+        SpectralFitting.FreeParameters{(:log_B, :n_e0, :θ)},
     }(
-        K,
-        B,
-        n_e0,
-        p,
-        γ_min,
-        γ_max,
-        Γ,
-        log_radius,
-        θ,
-        log_dL,
-        z,
+        K, log_B, n_e0, p, log_γ_min, log_γ_max, Γ, log_radius, θ, log_dL, z,
     )
-end
-
-νrange =  10 .^ collect(range(7, 26, 100))
-
-model = PKSSSCModel()
-flux = invokemodel(νrange, model)
-# flux = invokemodel!(flux, νrange, model)
-
-# find indices where flux is greater than 0
-indices = findall(x -> x > 0, flux)
-
-begin
-    p = plot(νrange[indices], flux[indices], xscale=:log10, yscale=:log10, xlabel="ν (Hz)", ylabel="Flux (units)", label = "Model", legend = :topleft)
-    display(p)
 end
 
 # read in the data values
@@ -79,38 +52,24 @@ dataset = SimpleDataset(
     y_err = 0.1 .* (10 .^ data[2, :]),
 )
 
-# Overplot dataset as large points, colored red, without lines
-plot!(dataset.x, dataset.y, seriestype = :scatter, markersize = 3, markerstrokewidth = 0, mc=:red, label = "Data")
-
-# create an instance of the model
-# model = SSCModel()
-
-# νrange =  10 .^ collect(range(7, 26, 100))
-# f = invokemodel(νrange, model)
-
-# plot(νrange, f)
-
-# begin
-    # base case
-    # plot!(dataset.x, dataset.y)
-    # plot!(νrange, f)
-    # display(p)
-# end
-
+# define the fitting problem
+model = PKSSSCModel()
 prob = FittingProblem(model, dataset)
 
-# LevenbergMarquadt version of fitting
-res = fit(prob, LevenbergMarquadt()) # , autodiff = :finite)
+# fit using Levenberg Marquadt
+res = fit(prob, LevenbergMarquadt(), autodiff = :finite)
 
-# NelderMead version of fitting
+# fit using Nelder Mead
 # using OptimizationOptimJL
 # res = fit(prob, ChiSquared(), NelderMead())
 
+# plot the data and the best fit model
 plot(dataset.x, dataset.y, seriestype = :scatter, xscale = :log10, yscale = :log10, mc=:red, xrange=(1e7, 1e26), yrange=(1e-17, 5e-13), legend = :topleft, label = "Data")
-# plot!(res, lc=:blue)
 
+νrange =  10 .^ collect(range(7, 26, 100))
 f = invokemodel(νrange, model, res.u)
-plot!(νrange, f, lc=:blue, label = "Best fit model")
+nonzero = findall(x -> x > 0.0, f)
+plot!(νrange[nonzero], f[nonzero], lc=:blue, label = "Best fit model")
 
 # print the result prettily
 display(res)
