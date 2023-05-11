@@ -14,7 +14,7 @@ jobs:
       - uses: julia-actions/setup-julia@v1
         with:
           version: '1'
-      - run: julia -e 'import Pkg; Pkg.Registry.add(Pkg.RegistrySpec(url="https://github.com/astro-group-bristol/AstroRegistry/"))'
+      - run: julia -e 'import Pkg; Pkg.Registry.add(Pkg.RegistrySpec(url="https://github.com/astro-group-bristol/AstroRegistry/")); Pkg.Registry.add(Pkg.RegistrySpec(url="https://github.com/JuliaRegistries/General"))'
       - run: julia --project=. -e 'using Pkg; Pkg.activate("."); Pkg.instantiate()'
       - run: julia --project=. docs/make.jl
         env:
